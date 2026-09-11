@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import logo from "@/associates/curki_logo.png";
 import { associates } from "@/data/associates";
 import { site } from "@/data/site";
-import { ButtonLink } from "@/components/ui/ButtonLink";
+import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { MobileNav, type NavLink } from "./MobileNav";
 
 const links: NavLink[] = [
@@ -46,7 +46,7 @@ export function SiteHeader() {
                 className="inline-flex items-center gap-1 rounded-full px-3.5 py-2 transition-colors hover:bg-white/70 hover:text-ink"
               >
                 AI Associates
-                <ChevronDown aria-hidden className="size-3.5 transition-transform group-hover:rotate-180" />
+                <ChevronDown aria-hidden className="size-3.5 transition-transform group-hover:rotate-180 reduced:transition-none" />
               </Link>
               <div className="invisible absolute top-full left-1/2 w-[22rem] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                 <ul className="panel rounded-3xl p-2 shadow-2xl shadow-brand-night/15">
@@ -85,11 +85,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Wrapper handles visibility: ButtonLink sets inline-flex, which would override `hidden`. */}
+          {/* Wrapper handles visibility: the button sets inline-flex, which would override `hidden`. */}
           <div className="hidden sm:block">
-            <ButtonLink href={site.bookingUrl} size="sm">
+            <MagneticButton href={site.bookingUrl} size="sm">
               {site.bookingLabel}
-            </ButtonLink>
+            </MagneticButton>
           </div>
           <MobileNav
             associates={associateLinks}

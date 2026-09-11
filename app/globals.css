@@ -25,7 +25,32 @@
   --color-night: #0d0c16;
 
   --radius-card: 1.25rem;
+
+  /* Motion easing tokens (mirrored in lib/motion.ts) */
   --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Motion duration tokens (mirrored in lib/motion.ts) */
+:root {
+  --dur-instant: 120ms;
+  --dur-fast: 200ms;
+  --dur-base: 350ms;
+  --dur-slow: 600ms;
+  --dur-reveal: 700ms;
+  --dur-ambient: 22s;
+  --stagger: 45ms;
+}
+
+/* `reduced:` applies when the OS asks for reduced motion OR inside a
+   ReducedMotionScope (the /components-preview toggle). */
+@custom-variant reduced {
+  @media (prefers-reduced-motion: reduce) {
+    @slot;
+  }
+  [data-motion="reduce"] & {
+    @slot;
+  }
 }
 
 @layer base {
@@ -105,6 +130,14 @@
     background: radial-gradient(closest-side, var(--orb, rgb(101 72 255 / 0.22)), transparent);
   }
 
+  /* Slow drifting orbs (transform only). */
+  .orb-drift {
+    animation: orb-drift var(--dur-ambient) ease-in-out infinite alternate;
+  }
+  .orb-drift-slow {
+    animation: orb-drift calc(var(--dur-ambient) * 1.35) ease-in-out infinite alternate-reverse;
+  }
+
   /* Glass surfaces */
   .glass {
     position: relative;
@@ -116,6 +149,17 @@
       0 22px 44px -28px rgb(49 16 129 / 0.28);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
     backdrop-filter: blur(16px) saturate(160%);
+  }
+
+  /* Glass look without backdrop blur: for 3D-transformed faces and nested surfaces. */
+  .glass-flat {
+    position: relative;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.84));
+    border: 1px solid rgb(255 255 255 / 0.9);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 1px 2px rgb(28 22 41 / 0.04),
+      0 22px 44px -28px rgb(49 16 129 / 0.28);
   }
 
   .glass-dark {
@@ -136,9 +180,7 @@
   }
 
   .lift {
-    transition:
-      transform 0.5s var(--ease-calm),
-      box-shadow 0.5s var(--ease-calm);
+    transition: transform var(--dur-slow) var(--ease-calm);
   }
 
   .text-gradient {
@@ -160,8 +202,163 @@
   }
 
   .rise {
-    animation: rise 0.9s var(--ease-calm) both;
+    animation: rise var(--dur-reveal) var(--ease-calm) both;
     animation-delay: var(--delay, 0ms);
+  }
+
+  .float-y {
+    animation: float-y 7s ease-in-out infinite;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* Word-by-word heading reveal. Starts at 0.01 opacity so LCP isn't delayed. */
+  .word-reveal .word {
+    display: inline-block;
+    animation: word-in var(--dur-reveal) var(--ease-calm) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger));
+  }
+
+  /* ---------- FlipCard ---------- */
+  .flip {
+    perspective: 1400px;
+  }
+  .flip-inner {
+    display: grid;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform var(--dur-slow) var(--ease-calm);
+  }
+  .flip-face {
+    grid-area: 1 / 1;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transition: opacity var(--dur-base) ease;
+  }
+  .flip-back {
+    transform: rotateY(180deg);
+  }
+  .flip[data-flipped="true"] .flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  /* ---------- HoverRevealCard ---------- */
+  .reveal-panel {
+    transform: translateY(101%);
+    pointer-events: none;
+    transition:
+      transform var(--dur-slow) var(--ease-calm),
+      opacity var(--dur-base) ease;
+  }
+  .reveal-host:focus-within .reveal-panel,
+  .reveal-host[data-open="true"] .reveal-panel {
+    transform: none;
+    pointer-events: auto;
+  }
+
+  /* ---------- Accordion (grid-row technique for smooth height) ---------- */
+  .acc-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur-base) var(--ease-calm);
+  }
+  .acc-panel[data-open="true"] {
+    grid-template-rows: 1fr;
+  }
+  .acc-panel > div {
+    overflow: hidden;
+  }
+  .acc-content {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+      opacity var(--dur-base) ease,
+      transform var(--dur-base) var(--ease-calm);
+  }
+  .acc-panel[data-open="true"] .acc-content {
+    opacity: 1;
+    transform: none;
+  }
+  .acc-icon {
+    transition: transform var(--dur-base) var(--ease-calm);
+  }
+  .acc-icon[data-open="true"] {
+    transform: rotate(45deg);
+  }
+
+  /* ---------- Tabs panels (stacked so switching never shifts layout) ---------- */
+  .tab-panels {
+    display: grid;
+  }
+  .tab-panel {
+    grid-area: 1 / 1;
+    transition:
+      opacity var(--dur-base) ease,
+      transform var(--dur-base) var(--ease-calm);
+  }
+  .tab-panel[data-active="false"] {
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+  }
+
+  /* ---------- Animated counter: reserve the final width to avoid layout shift ---------- */
+  .count-slot {
+    display: inline-grid;
+    font-variant-numeric: tabular-nums;
+  }
+  .count-slot::before {
+    content: attr(data-final);
+    visibility: hidden;
+    grid-area: 1 / 1;
+  }
+  .count-slot > span {
+    grid-area: 1 / 1;
+    text-align: right;
+  }
+
+  /* ---------- Marquee ---------- */
+  .marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-duration, 45s) linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .marquee-group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-inline: 1.75rem;
+    white-space: nowrap;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--color-ink-soft);
+  }
+
+  /* ---------- Cursor glow (accompanies the native cursor, never replaces it) ---------- */
+  .cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 70;
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0 -14px;
+    border-radius: 9999px;
+    pointer-events: none;
+    background: radial-gradient(closest-side, rgb(101 72 255 / 0.32), rgb(155 128 255 / 0.12) 60%, transparent);
   }
 }
 
@@ -172,13 +369,47 @@
   }
 }
 
+@keyframes word-in {
+  from {
+    opacity: 0.01;
+    transform: translateY(0.32em);
+  }
+}
+
+@keyframes float-y {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes orb-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-5%, 4%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(4%, -5%, 0) scale(0.96);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (hover: hover) {
+  .reveal-host:hover .reveal-panel {
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .lift:hover {
     transform: translateY(-4px);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.9),
-      0 2px 4px rgb(28 22 41 / 0.04),
-      0 32px 56px -28px rgb(49 16 129 / 0.36);
   }
 }
 
@@ -202,7 +433,8 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .glass {
+  .glass,
+  .glass-flat {
     background: #ffffff;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -217,6 +449,18 @@
   }
 }
 
+@media (forced-colors: active) {
+  .text-gradient {
+    background: none;
+    color: CanvasText;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion. Applied for the OS setting and inside [data-motion="reduce"].
+   Keyframe animations stop (content shows in its final state); flips and
+   reveals become simple fades; marquee becomes a static list.
+   ------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -224,15 +468,105 @@
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+  .flip-inner,
+  .flip[data-flipped="true"] .flip-inner,
+  .flip-back {
+    transform: none !important;
+    transition: none;
+  }
+  .flip-back,
+  .flip[data-flipped="true"] .flip-front {
+    opacity: 0;
+  }
+  .flip[data-flipped="true"] .flip-back {
+    opacity: 1;
+  }
+  .reveal-panel {
+    transform: none;
+    opacity: 0;
+  }
+  .reveal-host:focus-within .reveal-panel,
+  .reveal-host[data-open="true"] .reveal-panel,
+  .reveal-host:hover .reveal-panel {
+    opacity: 1;
+  }
+  .acc-panel {
+    transition: none;
+  }
+  .acc-content,
+  .tab-panel[data-active="false"] {
+    transform: none;
+  }
+  .marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .marquee-track {
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.75rem;
+  }
+  .marquee [data-duplicate] {
+    display: none;
+  }
+  .cursor-glow {
+    display: none;
   }
 }
 
-@media (forced-colors: active) {
-  .text-gradient {
-    background: none;
-    color: CanvasText;
-  }
+[data-motion="reduce"] *,
+[data-motion="reduce"] *::before,
+[data-motion="reduce"] *::after {
+  animation: none !important;
+}
+[data-motion="reduce"] .flip-inner,
+[data-motion="reduce"] .flip[data-flipped="true"] .flip-inner,
+[data-motion="reduce"] .flip-back {
+  transform: none !important;
+  transition: none;
+}
+[data-motion="reduce"] .flip-back,
+[data-motion="reduce"] .flip[data-flipped="true"] .flip-front {
+  opacity: 0;
+}
+[data-motion="reduce"] .flip[data-flipped="true"] .flip-back {
+  opacity: 1;
+}
+[data-motion="reduce"] .reveal-panel {
+  transform: none;
+  opacity: 0;
+}
+[data-motion="reduce"] .reveal-host:focus-within .reveal-panel,
+[data-motion="reduce"] .reveal-host[data-open="true"] .reveal-panel,
+[data-motion="reduce"] .reveal-host:hover .reveal-panel {
+  opacity: 1;
+}
+[data-motion="reduce"] .acc-panel {
+  transition: none;
+}
+[data-motion="reduce"] .acc-content,
+[data-motion="reduce"] .tab-panel[data-active="false"] {
+  transform: none;
+}
+[data-motion="reduce"] .lift:hover {
+  transform: none;
+}
+[data-motion="reduce"] .marquee {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+[data-motion="reduce"] .marquee-track {
+  width: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 0.75rem;
+}
+[data-motion="reduce"] .marquee [data-duplicate] {
+  display: none;
+}
+[data-motion="reduce"] .cursor-glow {
+  display: none;
 }

@@ -2,7 +2,16 @@
 
 # Curki.AI marketing site
 
-Next.js 16 App Router + TypeScript, statically generated (every page ships full HTML). Tailwind v4. `motion` (import `* as m from "motion/react-m"`; `LazyMotion` + `domAnimation` live in `components/ui/MotionProvider.tsx`). lucide-react icons. Australian English (en-AU).
+Next.js 16 App Router + TypeScript, statically generated (every page ships full HTML). Tailwind v4. `motion` (Framer Motion): import `* as m from "motion/react-m"`; features (`domMax`) are lazy-loaded by `components/ui/MotionProvider.tsx`. lucide-react icons. Australian English (en-AU).
+
+## Motion rules
+- Interactive components live in `components/interactive/`; all are shown on `/components-preview` (noindex) with a reduced-motion toggle. Add new ones there too.
+- Animate only transform and opacity (the accordion's grid-row height transition is the one exception).
+- Tokens: CSS `--dur-*` / `--ease-*` in `app/globals.css`, JS mirror in `lib/motion.ts`. Don't hard-code durations.
+- Reduced motion: use `useShouldReduceMotion()` in handlers/effects and the `reduced:` Tailwind variant or `[data-motion="reduce"]` CSS. Never branch initial render on it (hydration).
+- Hidden, flipped, collapsed and inactive-tab content must be in the server HTML.
+- Cursor effects (tilt, spotlight, magnetic, parallax) check `pointerType === "mouse"`. Moving layers use `glass-flat` (no backdrop blur).
+- Never animate the H1 from opacity 0 (LCP). No autoplay video, GIFs or GSAP unless a scroll sequence truly needs it.
 
 Design spec: @design/DESIGN.md
 Source of truth for all copy: `curki-audience-deep-dive.md`.

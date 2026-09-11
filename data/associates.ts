@@ -13,12 +13,16 @@ import jamesImg from "@/associates/james.jpeg";
 
 export type Item = { title: string; detail: string };
 
+export type AssociateIconName = "chart-pie" | "mic" | "user-plus" | "calendar-clock" | "shield-check";
+
 export type Associate = {
   slug: string;
   name: string;
   shortName: string;
   role: string;
   domain: string;
+  /** Icon shown on flip cards and badges. */
+  icon: AssociateIconName;
   /** Short one-line role used on cards. */
   tagline: string;
   /** H1 on the associate page; includes the name and primary keyword. */
@@ -56,6 +60,7 @@ export const associates: Associate[] = [
     shortName: "Oliver",
     role: "CFO Associate",
     domain: "Finance & Operations",
+    icon: "chart-pie",
     tagline: "Your digital CFO. Shows exactly where money is leaking and what to fix.",
     h1: "Oliver AI: AI finance, payroll and client profitability analysis",
     summary:
@@ -307,6 +312,7 @@ export const associates: Associate[] = [
     shortName: "Zoe",
     role: "Documentation Associate",
     domain: "Voice to document",
+    icon: "mic",
     tagline: "Turns spoken updates into structured, professional notes in seconds.",
     h1: "Zoe AI: voice-to-document AI for care notes and reports",
     summary:
@@ -516,6 +522,7 @@ export const associates: Associate[] = [
     shortName: "Alex",
     role: "HR Associate",
     domain: "Hiring & onboarding",
+    icon: "user-plus",
     tagline: "Your AI HR manager. Runs hiring to onboarding as one conversation.",
     h1: "Alex AI: AI recruitment and staff onboarding, from resume to shift-ready",
     summary:
@@ -711,6 +718,7 @@ export const associates: Associate[] = [
     shortName: "Will",
     role: "Rostering Associate",
     domain: "Smart rostering",
+    icon: "calendar-clock",
     tagline: "Always-on rostering assistant that fills shift gaps in minutes, not hours.",
     h1: "Will AI: AI rostering that fills shift gaps in minutes",
     summary:
@@ -904,6 +912,7 @@ export const associates: Associate[] = [
     shortName: "James",
     role: "Compliance Associate",
     domain: "Incident management & auditing",
+    icon: "shield-check",
     tagline: "Always-on quality and risk auditor that reviews every record, not a sample.",
     h1: "James AI: NDIS and aged care incident management and compliance auditing",
     summary:

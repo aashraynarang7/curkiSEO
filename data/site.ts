@@ -47,6 +47,8 @@ export const industries: { id: IndustryId; name: string }[] = [
 export type Persona = {
   id: string;
   title: string;
+  /** Short label for tabs and filters. */
+  shortTitle: string;
   concern: string;
   pains: string[];
   associates: string[]; // associate slugs
@@ -57,6 +59,7 @@ export const personas: Persona[] = [
   {
     id: "ceo-owner",
     title: "CEOs & Owners",
+    shortTitle: "CEOs & Owners",
     concern: "Staying profitable and compliant while the business grows.",
     pains: [
       "Know there are leaks, but not where they are or how to fix them",
@@ -68,6 +71,7 @@ export const personas: Persona[] = [
   {
     id: "finance-manager",
     title: "Finance Managers & CFOs",
+    shortTitle: "Finance",
     concern: "A single source of truth without days in spreadsheets.",
     pains: [
       "Every question from the owner means exporting from several systems",
@@ -79,6 +83,7 @@ export const personas: Persona[] = [
   {
     id: "operations-manager",
     title: "Operations Managers",
+    shortTitle: "Operations",
     concern: "Delivering every service with the right staff, without the admin.",
     pains: [
       "Hours spent rostering and finding last-minute replacements",
@@ -90,6 +95,7 @@ export const personas: Persona[] = [
   {
     id: "compliance-manager",
     title: "Quality & Compliance Managers",
+    shortTitle: "Compliance",
     concern: "Always audit-ready, without checking every record by hand.",
     pains: [
       "Days spent sampling notes to find incident and documentation gaps",
@@ -253,6 +259,8 @@ export const homeCopy = {
     title: "Five specialists that work on top of your existing systems",
     intro:
       "Each AI Associate is purpose-built for one part of your operation: finance and payroll, documentation, hiring and onboarding, rostering, and incident compliance.",
+    filterLabel: "Filter AI Associates by role",
+    filterAll: "All",
   },
   problems: {
     eyebrow: "The problems we solve",
@@ -260,6 +268,9 @@ export const homeCopy = {
     intro:
       "Most providers know something is wrong. They just can't see where it is, how big it has become or how to fix it.",
     quote: "Your mission is care. Our mission is clarity.",
+    toggleLabel: "Show details",
+    solvedBy: "Solved by",
+    hint: "Hover, focus or tap + for details",
   },
   how: {
     eyebrow: "How it works",
@@ -278,6 +289,9 @@ export const homeCopy = {
     title: "Built for the people accountable for margin, compliance and care",
     intro:
       "For Australian workforce-driven, compliance-focused organisations, typically with 20 or more participants or staff.",
+    personasLabel: "Choose your role",
+    industriesLabel: "Choose your industry",
+    associatesLabel: "Your AI Associates",
     industriesTitle: "Industries we serve",
     industriesNote:
       "Every AI Associate is built for Aged Care & NDIS providers. Hiring and onboarding with Alex AI extends across all five industries.",
@@ -285,6 +299,10 @@ export const homeCopy = {
   faq: {
     eyebrow: "FAQ",
     title: "Frequently asked questions",
+  },
+  marquee: {
+    eyebrow: "Built for Australian workforce-driven, compliance-focused organisations",
+    label: "Industries we serve",
   },
 };
 
@@ -307,21 +325,22 @@ export const cta = {
   points: ["No system changes", "Read-only by default", "Data hosted in Australia", "People approve every step"],
 };
 
-// Illustrative hero panel, based on Oliver's "overtime trap" use case in the source file.
+// Illustrative hero panel, based on Oliver's client profitability use cases in the source file.
+// Oliver's modules: Financial Health, Client Profitability, Payroll Analysis.
 export const heroDemo = {
   associateSlug: "oliver-finance",
   assistant: "Ask Oliver",
-  caption: "Illustrative example of Ask Oliver answering a question about penalty rates, with its sources.",
-  connected: ["Rostering", "Finance", "Payroll"],
-  question: "Which shifts are driving the most penalty rates?",
-  answer: "3 clients are consistently serviced on penalty rates, eroding margin to near zero.",
+  caption: "Illustrative example of Ask Oliver answering a client profitability question, with its sources.",
+  modules: ["Financial Health", "Client Profitability", "Payroll Analysis"],
+  question: "Which clients had the lowest margin last month?",
+  answer: "3 clients are trending unprofitable. Client A is running at -15% margin.",
   findings: [
-    { label: "Client A", detail: "Penalty windows, senior staff assigned", status: "risk" },
-    { label: "Client B", detail: "Weekend and public holiday rates", status: "risk" },
-    { label: "Client C", detail: "Recurring overtime pattern", status: "watch" },
+    { label: "Client A", detail: "-15% margin, driven by penalty rates", status: "risk" },
+    { label: "Client B", detail: "Missed invoices and claim leakage", status: "risk" },
+    { label: "Client C", detail: "Unspent funds nearing expiry", status: "watch" },
   ] as { label: string; detail: string; status: "risk" | "watch" }[],
-  sources: ["Rostering · shift records", "Payroll · pay lines"],
-  action: "Adjust roster mix and coverage to restore profitability.",
+  sources: ["Finance · invoices & claims", "Payroll · pay lines"],
+  action: "Review Client A's cost drivers, bill the missed invoices and schedule services before funds expire.",
   label: "Illustrative example",
   chips: [
     { associate: "will-rostering", text: "First valid YES received. Confirm the shift?" },

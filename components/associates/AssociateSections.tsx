@@ -2,16 +2,25 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight, Ban, Check, Minus, MessageCircleQuestion } from "lucide-react";
-import { getRelated, type Associate } from "@/data/associates";
+import { associates, getRelated, type Associate } from "@/data/associates";
 import { connectSteps, industries, site } from "@/data/site";
 import type { Crumb } from "@/lib/seo";
 import { cn } from "@/lib/cn";
+import { stagger } from "@/lib/motion";
 import { AssociateCard } from "./AssociateCard";
-import { FaqList } from "@/components/sections/FaqList";
+import { AssociateIcon } from "./AssociateIcon";
+import { Accordion } from "@/components/interactive/Accordion";
+import { Carousel } from "@/components/interactive/Carousel";
+import { ExpandableCard } from "@/components/interactive/ExpandableCard";
+import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ParallaxLayer, ParallaxScene } from "@/components/interactive/Parallax";
+import { SpotlightCard } from "@/components/interactive/SpotlightCard";
+import { StepsTimeline } from "@/components/interactive/StepsTimeline";
+import { TiltCard } from "@/components/interactive/TiltCard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 
@@ -53,36 +62,50 @@ export function AssociateHero({ a, crumbs }: { a: Associate; crumbs: Crumb[] }) 
               ))}
             </ul>
             <div className="mt-9 flex flex-wrap gap-3">
-              <ButtonLink href={site.bookingUrl} size="lg" arrow>
+              <MagneticButton href={site.bookingUrl} size="lg" arrow>
                 {site.bookingLabel}
-              </ButtonLink>
-              <ButtonLink href="#capabilities" size="lg" variant="secondary">
+              </MagneticButton>
+              <MagneticButton href="#capabilities" size="lg" variant="secondary">
                 What {a.shortName} does
-              </ButtonLink>
+              </MagneticButton>
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-md">
-            <div aria-hidden className="orb -inset-16" style={{ "--orb": "rgb(155 128 255 / 0.42)" } as CSSProperties} />
-            <figure className="glass relative rounded-[2rem] p-3">
-              <Image
-                src={a.image.src}
-                alt={a.image.alt}
-                preload
-                sizes="(min-width: 1024px) 420px, (min-width: 640px) 448px, 90vw"
-                className="aspect-square w-full rounded-[1.5rem] object-cover"
-              />
-              <figcaption className="panel mx-1 mt-3 mb-1 rounded-2xl px-4 py-3">
-                <span className={cn(labelClass, "flex items-center gap-2 text-brand-deep")}>
-                  <MessageCircleQuestion aria-hidden className="size-3.5" />
-                  Ask {a.shortName}
-                </span>
-                <span className="mt-1.5 block text-[0.9375rem] leading-snug text-ink">
-                  {a.askPrompts?.[0] ? `“${a.askPrompts[0]}”` : a.tagline}
-                </span>
-              </figcaption>
-            </figure>
-          </div>
+          <ParallaxScene className="relative mx-auto w-full max-w-md">
+            <ParallaxLayer depth={-18} aria-hidden className="absolute -inset-16">
+              <div className="orb orb-drift inset-0" style={{ "--orb": "rgb(155 128 255 / 0.42)" } as CSSProperties} />
+            </ParallaxLayer>
+            <ParallaxLayer depth={8}>
+              <figure className="glass relative rounded-[2rem] p-3">
+                <Image
+                  src={a.image.src}
+                  alt={a.image.alt}
+                  preload
+                  sizes="(min-width: 1024px) 420px, (min-width: 640px) 448px, 90vw"
+                  className="aspect-square w-full rounded-[1.5rem] object-cover"
+                />
+                <figcaption className="panel mx-1 mt-3 mb-1 rounded-2xl px-4 py-3">
+                  <span className={cn(labelClass, "flex items-center gap-2 text-brand-deep")}>
+                    <MessageCircleQuestion aria-hidden className="size-3.5" />
+                    Ask {a.shortName}
+                  </span>
+                  <span className="mt-1.5 block text-[0.9375rem] leading-snug text-ink">
+                    {a.askPrompts?.[0] ? `“${a.askPrompts[0]}”` : a.tagline}
+                  </span>
+                </figcaption>
+              </figure>
+            </ParallaxLayer>
+            <ParallaxLayer depth={26} aria-hidden className="absolute -top-5 -left-6 hidden sm:block">
+              <div className="float-y">
+                <div className="glass-flat flex items-center gap-2.5 rounded-2xl py-2 pr-4 pl-2">
+                  <span className="grid size-9 place-items-center rounded-xl bg-lavender text-brand-deep">
+                    <AssociateIcon name={a.icon} className="size-4" />
+                  </span>
+                  <span className="text-sm font-semibold text-ink">{a.domain}</span>
+                </div>
+              </div>
+            </ParallaxLayer>
+          </ParallaxScene>
         </div>
       </Container>
     </section>
@@ -107,12 +130,12 @@ export function ProblemSolution({ a }: { a: Associate }) {
             </ul>
           </div>
         </Reveal>
-        <Reveal delay={0.08} className="h-full">
-          <div className="glass h-full rounded-card p-7 sm:p-9">
+        <Reveal delay={stagger * 1.5} className="h-full">
+          <GlassCard className="h-full p-7 sm:p-9">
             <h3 className={cn(labelClass, "text-teal-ink")}>With {a.name}</h3>
             <p className="mt-4 text-lg leading-relaxed text-ink">{a.solution.after}</p>
             <p className="mt-8 border-t border-ink/8 pt-6 font-display text-xl leading-snug font-bold text-ink">“{a.quote}”</p>
-          </div>
+          </GlassCard>
         </Reveal>
       </div>
     </Section>
@@ -173,14 +196,16 @@ export function Modules({ a }: { a: Associate }) {
   return (
     <Section id="modules" eyebrow="Modules" title={`${numberWords[a.modules.length] ?? a.modules.length} modules, one Associate`}>
       <ul className={cn("grid gap-5", a.modules.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
-        {a.modules.map((m, i) => (
-          <li key={m.title}>
-            <Reveal delay={i * 0.06} className="h-full">
-              <article className="glass lift h-full rounded-card p-7">
-                <p className={cn(labelClass, "text-brand-deep")}>Module {String(i + 1).padStart(2, "0")}</p>
-                <h3 className="mt-4 text-2xl font-bold">{m.title}</h3>
-                <p className="mt-3 leading-relaxed text-body">{m.detail}</p>
-              </article>
+        {a.modules.map((mod, i) => (
+          <li key={mod.title}>
+            <Reveal delay={i * stagger} className="h-full">
+              <TiltCard>
+                <GlassCard as="article" blur={false} className="h-full p-7">
+                  <p className={cn(labelClass, "text-brand-deep")}>Module {String(i + 1).padStart(2, "0")}</p>
+                  <h3 className="mt-4 text-2xl font-bold">{mod.title}</h3>
+                  <p className="mt-3 leading-relaxed text-body">{mod.detail}</p>
+                </GlassCard>
+              </TiltCard>
             </Reveal>
           </li>
         ))}
@@ -191,13 +216,19 @@ export function Modules({ a }: { a: Associate }) {
 
 export function Capabilities({ a }: { a: Associate }) {
   return (
-    <Section id="capabilities" eyebrow="Capabilities" title="Key capabilities" intro={`What ${a.shortName} can do for your team.`}>
-      <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+    <Section id="capabilities" eyebrow="Capabilities" title="Key capabilities" intro={`What ${a.shortName} can do for your team. Select a capability for detail.`}>
+      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {a.capabilities.map((c, i) => (
-          <li key={c.title} className="border-t border-ink/10 py-6">
-            <p className="font-mono text-xs text-brand-deep">{String(i + 1).padStart(2, "0")}</p>
-            <h3 className="mt-3 text-lg leading-snug font-bold">{c.title}</h3>
-            <p className="mt-2 leading-relaxed text-muted">{c.detail}</p>
+          <li key={c.title}>
+            <Reveal delay={(i % 3) * stagger} className="h-full">
+              <ExpandableCard
+                eyebrow={String(i + 1).padStart(2, "0")}
+                title={c.title}
+                summary={c.detail}
+                context={`${a.name} · ${a.role}`}
+                cta={{ href: site.bookingUrl, label: `See ${a.shortName} in a walkthrough` }}
+              />
+            </Reveal>
           </li>
         ))}
       </ul>
@@ -211,12 +242,12 @@ export function UseCases({ a }: { a: Associate }) {
       <ul className="grid gap-5 md:grid-cols-3">
         {a.useCases.map((u, i) => (
           <li key={u.title}>
-            <Reveal delay={i * 0.06} className="h-full">
-              <article className="glass h-full rounded-card p-7">
+            <Reveal delay={i * stagger} className="h-full">
+              <SpotlightCard as="article" contentClassName="p-7">
                 <p className={cn(labelClass, "text-muted")}>Scenario {String(i + 1).padStart(2, "0")}</p>
                 <h3 className="mt-4 text-xl font-bold">{u.title}</h3>
                 <p className="mt-3 leading-relaxed text-body">{u.detail}</p>
-              </article>
+              </SpotlightCard>
             </Reveal>
           </li>
         ))}
@@ -230,7 +261,7 @@ export function Trust({ a }: { a: Associate }) {
     <Section id="trust" eyebrow="Built for trust" title="Asks before it assumes. Knows its limits.">
       <div className="grid gap-5 lg:grid-cols-2">
         <Reveal className="h-full">
-          <div className="glass h-full rounded-card p-7 sm:p-9">
+          <GlassCard className="h-full p-7 sm:p-9">
             <h3 className="text-2xl font-bold">When {a.shortName} is unsure</h3>
             <ul className="mt-6 space-y-5">
               {a.uncertainty.map((u) => (
@@ -240,9 +271,9 @@ export function Trust({ a }: { a: Associate }) {
                 </li>
               ))}
             </ul>
-          </div>
+          </GlassCard>
         </Reveal>
-        <Reveal delay={0.08} className="h-full">
+        <Reveal delay={stagger * 1.5} className="h-full">
           <div className="h-full rounded-card border border-ink/8 bg-white/45 p-7 sm:p-9">
             <h3 className="text-2xl font-bold">What {a.shortName} won&apos;t do</h3>
             <ul className="mt-6 divide-y divide-ink/8">
@@ -309,28 +340,16 @@ export function Connect({ a }: { a: Associate }) {
         </div>
 
         <Reveal>
-          <div className="glass rounded-card p-7 sm:p-9">
+          <GlassCard className="p-7 sm:p-9">
             <h3 className="text-2xl font-bold">Up and running in four steps</h3>
-            <ol className="mt-7 space-y-6">
-              {connectSteps.map((s, i) => (
-                <li key={s.title} className="flex gap-4">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-lavender font-mono text-sm font-medium text-brand-deep">
-                    {i + 1}
-                  </span>
-                  <div className="pt-1">
-                    <h4 className="font-display font-bold text-ink">{s.title}</h4>
-                    <p className="mt-1 leading-relaxed text-muted">{s.detail}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <StepsTimeline steps={connectSteps} headingLevel="h4" variant="tinted" className="mt-7" />
             <p className="mt-8 rounded-xl bg-lavender/80 px-4 py-3.5 text-[0.9375rem] leading-relaxed text-ink-soft">
               Stuck on scopes or ID mapping? Book a free 30-minute session and our product experts will onboard you end to end.{" "}
               <Link href={site.bookingUrl} className="font-semibold text-brand-deep underline-offset-4 hover:underline">
                 {site.bookingLabel}
               </Link>
             </p>
-          </div>
+          </GlassCard>
         </Reveal>
       </div>
     </Section>
@@ -360,7 +379,7 @@ export function Fit({ a }: { a: Associate }) {
             ))}
           </ul>
         </div>
-        <div className="glass rounded-card p-7 lg:col-span-2">
+        <GlassCard className="p-7 lg:col-span-2">
           <h3 className={cn(labelClass, "text-teal-ink")}>Ideal for</h3>
           <p className="mt-3 text-lg leading-relaxed text-ink">{a.fit.idealFor}</p>
           {a.fit.notIdealFor && (
@@ -369,7 +388,7 @@ export function Fit({ a }: { a: Associate }) {
               <p className="mt-3 leading-relaxed text-body">{a.fit.notIdealFor}</p>
             </>
           )}
-        </div>
+        </GlassCard>
       </div>
     </Section>
   );
@@ -379,7 +398,7 @@ export function AssociateFaq({ a }: { a: Associate }) {
   return (
     <Section id="faq" eyebrow="FAQ" title={`${a.name}: frequently asked questions`}>
       <div className="max-w-3xl">
-        <FaqList faqs={a.faqs} />
+        <Accordion items={a.faqs} />
       </div>
     </Section>
   );
@@ -387,16 +406,14 @@ export function AssociateFaq({ a }: { a: Associate }) {
 
 export function Related({ a }: { a: Associate }) {
   const related = getRelated(a);
-  if (!related.length) return null;
+  const ordered = [...related, ...associates.filter((o) => o.slug !== a.slug && !a.related.includes(o.slug))];
+  if (!ordered.length) return null;
   return (
     <Section id="related" eyebrow="Related AI Associates" title="Explore related AI Associates">
-      <ul className="grid gap-5 md:grid-cols-2">
-        {related.map((r) => (
-          <li key={r.slug}>
-            <AssociateCard associate={r} />
-          </li>
-        ))}
-      </ul>
+      <Carousel
+        label="AI Associates"
+        slides={ordered.map((r) => ({ id: r.slug, label: r.name, content: <AssociateCard associate={r} flat /> }))}
+      />
       <Link
         href="/associates"
         className="mt-8 inline-flex items-center gap-1.5 font-semibold text-brand-deep underline-offset-4 hover:underline"

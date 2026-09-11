@@ -69,10 +69,53 @@ Computed with the WCAG relative-luminance formula. Worst-case light glass = whit
 
 ## Motion
 
-- Hover: `.lift` raises by 4px over 500ms `--ease-calm`, only on hover-capable devices with no reduced-motion preference.
-- Scroll reveal: `<Reveal>` (motion) fades and rises by 18px, once. Never used on the H1 or hero, to protect LCP.
-- Hero secondary elements use the CSS `.rise` stagger.
-- `prefers-reduced-motion`: CSS animations are disabled; `MotionConfig reducedMotion="user"` drops transforms.
+Motion should feel calm and purposeful. Each page gets one or two "wow" moments; everything else stays subtle.
+
+### Tokens
+
+| Token | CSS | JS (`lib/motion.ts`) | Use |
+|---|---|---|---|
+| Instant | `--dur-instant` 120ms | `duration.instant` | Micro feedback |
+| Fast | `--dur-fast` 200ms | `duration.fast` | Colour and hover state |
+| Base | `--dur-base` 350ms | `duration.base` | Tabs, accordion, page transitions |
+| Slow | `--dur-slow` 600ms | `duration.slow` | Flips, hover-reveal, lift |
+| Reveal | `--dur-reveal` 700ms | `duration.reveal` | Scroll and word reveals |
+| Ambient | `--dur-ambient` 22s | n/a | Orb drift |
+| Calm easing | `--ease-calm` (0.22, 1, 0.36, 1) | `ease.calm` | Default |
+| Out-expo | `--ease-out-expo` | `ease.outExpo` | Counters |
+| Springs | n/a | `spring.soft`, `spring.snap` | Cursor-following effects, snapping |
+
+### Components (`components/interactive/`)
+
+| Component | Where it's used | Reduced motion | Touch |
+|---|---|---|---|
+| FlipCard + FilterableFlipGrid | Home associate grid | Cross-fade | Tap toggles |
+| TiltCard | Associate modules | Static | Static |
+| SpotlightCard | Associate use cases | Plain glass | Plain glass |
+| ExpandableCard | Associate capabilities | Fade, no morph | Tap |
+| StackedCards | `/associates` hero | Final positions | Fans out on scroll |
+| HoverRevealCard | Home pain points | Fade, no slide | Tap + |
+| MagneticButton | Every CTA | No pull; ripple fades | No pull |
+| Carousel | Related associates | Instant snap | Swipe |
+| WordReveal, drifting orbs, Parallax | Home hero; associate hero parallax | Static | No parallax |
+| Reveal | Sections and cards | Fade only | Same |
+| AnimatedCounter | Stat strips | Final values | Same |
+| StepsTimeline | How it works (home and associate pages) | Fully drawn | Same |
+| Marquee | Home industry strip | Static wrapped list | Same |
+| Tabs | Personas, industries | No slide | Same |
+| Accordion | FAQs | Instant height, fade | Same |
+| ScrollProgress | Associate pages | Same | Same |
+| Page transition (`app/template.tsx`) | Client-side route changes only | Fade | Same |
+| CursorGlow | `/components-preview` only (optional) | Hidden | Hidden |
+
+### Performance rules
+
+- Animate transform and opacity only. The accordion's `grid-template-rows` transition is the one exception, and it only ever runs after a click.
+- Moving or 3D-transformed surfaces (flip faces, floating hero cards, tilt cards, carousel cards, stacked cards) use `.glass-flat`, never backdrop blur.
+- The H1 word reveal starts at 0.01 opacity (not 0), so the largest element is painted immediately for LCP.
+- The first page load never plays the page transition. Counters don't reset numbers already on screen.
+- Motion features load lazily after hydration (`lib/motion-features.ts`).
+- Animated elements reserve their space (stacked tab panels, grid-overlaid flip faces, fixed-height decks, width-reserving counters), so there's no CLS.
 
 ## Layout
 

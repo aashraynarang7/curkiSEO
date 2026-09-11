@@ -3,18 +3,21 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import type { Associate } from "@/data/associates";
 import { cn } from "@/lib/cn";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 type AssociateCardProps = {
   associate: Associate;
   headingLevel?: "h2" | "h3";
   compact?: boolean;
+  /** No backdrop blur: use inside moving containers (carousels) to keep dragging smooth. */
+  flat?: boolean;
   className?: string;
 };
 
-export function AssociateCard({ associate: a, headingLevel = "h3", compact = false, className }: AssociateCardProps) {
+export function AssociateCard({ associate: a, headingLevel = "h3", compact = false, flat = false, className }: AssociateCardProps) {
   const Heading = headingLevel;
   return (
-    <article className={cn("glass lift group relative flex h-full flex-col rounded-card p-6 sm:p-7", className)}>
+    <GlassCard as="article" blur={!flat} lift className={cn("group relative flex h-full flex-col p-6 sm:p-7", className)}>
       <div className="flex items-center gap-4">
         <div className="relative shrink-0">
           <Image
@@ -57,6 +60,6 @@ export function AssociateCard({ associate: a, headingLevel = "h3", compact = fal
         Meet {a.shortName}
         <ArrowRight className="size-4 transition-transform duration-300 motion-safe:group-hover:translate-x-1" />
       </span>
-    </article>
+    </GlassCard>
   );
 }

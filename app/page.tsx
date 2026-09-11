@@ -7,6 +7,7 @@ import {
   Hero,
   HomeFaqSection,
   HowItWorksSection,
+  IndustryStrip,
   ProblemsSection,
   StatStrip,
   WhoItsForSection,
@@ -26,6 +27,7 @@ export default function HomePage() {
       <JsonLd data={faqPageSchema(homeFaqs, "/")} />
       <Hero />
       <StatStrip />
+      <IndustryStrip />
       <AssociatesSection />
       <ProblemsSection />
       <HowItWorksSection />

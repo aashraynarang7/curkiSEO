@@ -15,6 +15,7 @@ import {
   Trust,
   UseCases,
 } from "@/components/associates/AssociateSections";
+import { ScrollProgress } from "@/components/interactive/ScrollProgress";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { JsonLd } from "@/components/seo/JsonLd";
 
@@ -54,6 +55,7 @@ export default async function AssociatePage({ params }: PageProps<"/associates/[
       <JsonLd data={breadcrumbSchema(crumbs)} />
       <JsonLd data={faqPageSchema(a.faqs, path)} />
 
+      <ScrollProgress />
       <AssociateHero a={a} crumbs={crumbs} />
       <ProblemSolution a={a} />
       <Outcomes a={a} />
