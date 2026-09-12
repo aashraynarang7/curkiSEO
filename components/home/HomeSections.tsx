@@ -1,5 +1,4 @@
 import { Check, EyeOff, KeyRound, Lock, MapPin, Unplug, UserCheck, type LucideIcon } from "lucide-react";
-import type { CSSProperties } from "react";
 import { associates } from "@/data/associates";
 import {
   connectSteps,
@@ -15,7 +14,6 @@ import {
 } from "@/data/site";
 import { toFlipCard } from "@/lib/cards";
 import { cn } from "@/lib/cn";
-import { stagger } from "@/lib/motion";
 import { AssociateChip, AssociateRow } from "@/components/associates/AssociateChip";
 import { Accordion } from "@/components/interactive/Accordion";
 import { AnimatedCounter } from "@/components/interactive/AnimatedCounter";
@@ -25,11 +23,11 @@ import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { Marquee } from "@/components/interactive/Marquee";
 import { StepsTimeline } from "@/components/interactive/StepsTimeline";
 import { Tabs, type TabItem } from "@/components/interactive/Tabs";
-import { WordReveal, wordCount } from "@/components/interactive/WordReveal";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal } from "@/components/ui/Reveal";
+import { BackgroundArt } from "@/components/ui/BackgroundArt";
 import { Section } from "@/components/ui/Section";
 import { EvidencePanel } from "./EvidencePanel";
 
@@ -38,15 +36,18 @@ const labelClass = "font-mono text-[0.6875rem] font-medium uppercase tracking-[0
 export function Hero() {
   const { hero } = homeCopy;
   return (
-    <section aria-labelledby="hero-heading" className="relative pt-12 pb-14 sm:pt-20 sm:pb-20">
+    <section aria-labelledby="hero-heading" className="relative isolate pt-12 pb-14 sm:pt-20 sm:pb-20">
+      <BackgroundArt variant="hero" />
       <Container className="grid items-center gap-16 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
         <div>
-          <Eyebrow>{hero.eyebrow}</Eyebrow>
-          <h1 id="hero-heading" className="word-reveal mt-6 text-[2.5rem] leading-[1.04] font-extrabold sm:text-6xl lg:text-[3.75rem]">
-            <WordReveal text={hero.titleLead} /> <WordReveal text={hero.titleAccent} startIndex={wordCount(hero.titleLead)} className="text-gradient" />
+          <div data-gsap-hero>
+            <Eyebrow>{hero.eyebrow}</Eyebrow>
+          </div>
+          <h1 data-gsap-hero id="hero-heading" className="mt-6 text-[2.5rem] leading-[1.04] font-extrabold sm:text-6xl lg:text-[3.75rem]">
+            {hero.titleLead} <span className="text-gradient">{hero.titleAccent}</span>
           </h1>
-          <p className="mt-7 max-w-xl text-lg leading-relaxed text-body sm:text-xl sm:leading-relaxed">{hero.intro}</p>
-          <div className="rise mt-9 flex flex-wrap items-center gap-3" style={{ "--delay": "450ms" } as CSSProperties}>
+          <p data-gsap-hero className="mt-7 max-w-xl text-lg leading-relaxed text-body sm:text-xl sm:leading-relaxed">{hero.intro}</p>
+          <div data-gsap-hero className="mt-9 flex flex-wrap items-center gap-3">
             <MagneticButton href={site.bookingUrl} size="lg" arrow>
               {site.bookingLabel}
             </MagneticButton>
@@ -54,7 +55,7 @@ export function Hero() {
               {hero.secondaryCta.label}
             </MagneticButton>
           </div>
-          <ul className="rise mt-9 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted" style={{ "--delay": "600ms" } as CSSProperties}>
+          <ul data-gsap-hero className="mt-9 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
             {hero.assurances.map((item) => (
               <li key={item} className="flex items-center gap-2">
                 <Check aria-hidden className="size-4 text-teal-ink" />
@@ -63,7 +64,9 @@ export function Hero() {
             ))}
           </ul>
         </div>
-        <EvidencePanel />
+        <div data-gsap-hero>
+          <EvidencePanel />
+        </div>
       </Container>
     </section>
   );
@@ -114,9 +117,12 @@ export function AssociatesSection() {
     ...personas.map((p) => ({ id: p.id, label: p.shortTitle, slugs: p.associates })),
   ];
   return (
-    <Section id="associates" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}>
-      <FilterableFlipGrid cards={associates.map(toFlipCard)} filters={filters} label={copy.filterLabel} />
-    </Section>
+    <div className="relative isolate">
+      <BackgroundArt variant="features" />
+      <Section id="associates" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}>
+        <FilterableFlipGrid cards={associates.map(toFlipCard)} filters={filters} label={copy.filterLabel} />
+      </Section>
+    </div>
   );
 }
 
@@ -127,7 +133,7 @@ export function ProblemsSection() {
       <ul className="grid gap-5 lg:grid-cols-3">
         {problemPillars.map((p, i) => (
           <li key={p.id}>
-            <Reveal delay={i * stagger} className="h-full">
+            <Reveal className="h-full">
               <HoverRevealCard eyebrow={String(i + 1).padStart(2, "0")} title={p.title} summary={p.statement} toggleLabel={copy.toggleLabel}>
                 <p className="leading-relaxed text-body">{p.detail}</p>
                 <p className={cn(labelClass, "mt-5")}>{copy.solvedBy}</p>

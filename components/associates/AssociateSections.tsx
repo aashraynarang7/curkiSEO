@@ -6,7 +6,6 @@ import { associates, getRelated, type Associate } from "@/data/associates";
 import { connectSteps, industries, site } from "@/data/site";
 import type { Crumb } from "@/lib/seo";
 import { cn } from "@/lib/cn";
-import { stagger } from "@/lib/motion";
 import { AssociateCard } from "./AssociateCard";
 import { AssociateIcon } from "./AssociateIcon";
 import { Accordion } from "@/components/interactive/Accordion";
@@ -130,7 +129,7 @@ export function ProblemSolution({ a }: { a: Associate }) {
             </ul>
           </div>
         </Reveal>
-        <Reveal delay={stagger * 1.5} className="h-full">
+        <Reveal className="h-full">
           <GlassCard className="h-full p-7 sm:p-9">
             <h3 className={cn(labelClass, "text-teal-ink")}>With {a.name}</h3>
             <p className="mt-4 text-lg leading-relaxed text-ink">{a.solution.after}</p>
@@ -198,7 +197,7 @@ export function Modules({ a }: { a: Associate }) {
       <ul className={cn("grid gap-5", a.modules.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
         {a.modules.map((mod, i) => (
           <li key={mod.title}>
-            <Reveal delay={i * stagger} className="h-full">
+            <Reveal className="h-full">
               <TiltCard>
                 <GlassCard as="article" blur={false} className="h-full p-7">
                   <p className={cn(labelClass, "text-brand-deep")}>Module {String(i + 1).padStart(2, "0")}</p>
@@ -220,7 +219,7 @@ export function Capabilities({ a }: { a: Associate }) {
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {a.capabilities.map((c, i) => (
           <li key={c.title}>
-            <Reveal delay={(i % 3) * stagger} className="h-full">
+            <Reveal className="h-full">
               <ExpandableCard
                 eyebrow={String(i + 1).padStart(2, "0")}
                 title={c.title}
@@ -242,7 +241,7 @@ export function UseCases({ a }: { a: Associate }) {
       <ul className="grid gap-5 md:grid-cols-3">
         {a.useCases.map((u, i) => (
           <li key={u.title}>
-            <Reveal delay={i * stagger} className="h-full">
+            <Reveal className="h-full">
               <SpotlightCard as="article" contentClassName="p-7">
                 <p className={cn(labelClass, "text-muted")}>Scenario {String(i + 1).padStart(2, "0")}</p>
                 <h3 className="mt-4 text-xl font-bold">{u.title}</h3>
@@ -273,7 +272,7 @@ export function Trust({ a }: { a: Associate }) {
             </ul>
           </GlassCard>
         </Reveal>
-        <Reveal delay={stagger * 1.5} className="h-full">
+        <Reveal className="h-full">
           <div className="h-full rounded-card border border-ink/8 bg-white/45 p-7 sm:p-9">
             <h3 className="text-2xl font-bold">What {a.shortName} won&apos;t do</h3>
             <ul className="mt-6 divide-y divide-ink/8">

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { homeCopy, site } from "@/data/site";
 import { organizationSchema } from "@/lib/seo";
@@ -8,14 +8,9 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MotionProvider } from "@/components/ui/MotionProvider";
 
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-plex-mono",
-  display: "swap",
-});
+// Inter is the face www.curki.ai renders its headings, body copy and buttons in, so it is the
+// only family on this site too: display, body and label styles are all weights of the one font.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -39,12 +34,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang={site.language}
       data-scroll-behavior="smooth"
-      className={`${manrope.variable} ${jakarta.variable} ${plexMono.variable}`}
+      className={inter.variable}
     >
+      <head>
+        {/*
+          Pre-hides scroll-reveal targets before first paint so the deferred GSAP chunk can hide
+          them without a visible flash. Only ever set when JS runs and the visitor has not asked
+          for reduced motion, so content is never invisible without a tween coming to reveal it.
+          GsapStage removes the attribute as soon as it owns the inline styles, and on failure.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(matchMedia('(prefers-reduced-motion: no-preference)').matches)" +
+              "document.documentElement.setAttribute('data-gsap-armed','')}catch(e){}",
+          }}
+        />
+      </head>
       <body className="flex min-h-dvh flex-col">
-        <noscript>
-          <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
-        </noscript>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white"

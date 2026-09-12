@@ -30,6 +30,11 @@ export type Associate = {
   summary: string;
   seo: { title: string; description: string; keywords: string[] };
   image: { src: StaticImageData; alt: string };
+  /**
+   * Role illustration in `public/images/associates/`. `bg` is the artwork's own ground colour,
+   * so a wide frame can extend it seamlessly instead of cropping the square.
+   */
+  art: { name: string; alt: string; bg: string };
   /** 2–3 headline outcomes for cards. */
   cardOutcomes: string[];
   problem: { before: string; pains: string[] };
@@ -81,6 +86,12 @@ export const associates: Associate[] = [
       src: oliverImg,
       alt: "Portrait of Oliver AI, Curki's CFO Associate for finance and operations",
     },
+    art: {
+      name: "oliver-margin",
+      alt: "Illustration of Oliver AI reconciling revenue, wages and invoices to find margin leaks",
+      bg: "#eee2d6",
+    },
+
     cardOutcomes: [
       "Boost margins by up to 15%",
       "Recover $100k–$200k a year in missed invoices and claim leakage",
@@ -333,6 +344,12 @@ export const associates: Associate[] = [
       src: zoeImg,
       alt: "Portrait of Zoe AI, Curki's Documentation Associate wearing a headset",
     },
+    art: {
+      name: "zoe-voice-to-document",
+      alt: "Illustration of Zoe AI turning a spoken update into a structured care note",
+      bg: "#efd9c3",
+    },
+
     cardOutcomes: [
       "Replace end-of-shift typing with voice capture",
       "Prompts for missing details before a note is approved",
@@ -543,6 +560,12 @@ export const associates: Associate[] = [
       src: alexImg,
       alt: "Portrait of Alex AI, Curki's HR Associate for hiring and onboarding",
     },
+    art: {
+      name: "alex-hr",
+      alt: "Illustration of Alex AI screening candidates and verifying worker checks before day one",
+      bg: "#ede3d9",
+    },
+
     cardOutcomes: [
       "Screen and shortlist resumes against the job description",
       "Collect and verify mandatory checks before day one",
@@ -739,6 +762,12 @@ export const associates: Associate[] = [
       src: willImg,
       alt: "Portrait of Will AI, Curki's Rostering Associate",
     },
+    art: {
+      name: "will-rostering",
+      alt: "Illustration of Will AI filling an open shift with a nearby qualified worker",
+      bg: "#efe6dd",
+    },
+
     cardOutcomes: [
       "Fill urgent gaps in about 2 minutes",
       "Reduce overtime and penalty-rate exposure",
@@ -933,6 +962,12 @@ export const associates: Associate[] = [
       src: jamesImg,
       alt: "Portrait of James AI, Curki's Compliance Associate",
     },
+    art: {
+      name: "james-compliance",
+      alt: "Illustration of James AI scanning shift notes and incident records for gaps",
+      bg: "#f3e4d7",
+    },
+
     cardOutcomes: [
       "Audit 100% of records, not a 5–10% sample",
       "Catch incidents mentioned in notes but never logged",

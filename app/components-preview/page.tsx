@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { associates } from "@/data/associates";
 import { connectSteps, homeCopy, homeFaqs, industries, problemPillars, securityPoints, site } from "@/data/site";
 import { toFlipCard } from "@/lib/cards";
-import { stagger } from "@/lib/motion";
 import { AssociateCard } from "@/components/associates/AssociateCard";
 import { AssociateChip } from "@/components/associates/AssociateChip";
 import { EvidencePanel } from "@/components/home/EvidencePanel";
@@ -232,9 +231,9 @@ export default function ComponentsPreviewPage() {
         <PreviewSection id="reveal" title="Scroll reveals" notes="Fade and slide in with a staggered delay as they enter the viewport. Reduced motion: fade only.">
           <ReplayBox>
             <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {securityPoints.map((p, i) => (
+              {securityPoints.map((p) => (
                 <li key={p.title}>
-                  <Reveal delay={i * stagger} className="h-full">
+                  <Reveal className="h-full">
                     <GlassCard className="h-full p-6">
                       <h3 className="font-display font-bold text-ink">{p.title}</h3>
                       <p className="mt-1.5 leading-relaxed text-muted">{p.detail}</p>

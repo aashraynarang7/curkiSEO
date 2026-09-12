@@ -3,7 +3,6 @@ import { associates } from "@/data/associates";
 import { associatesIndexCopy, site } from "@/data/site";
 import { toFlipCard } from "@/lib/cards";
 import { cn } from "@/lib/cn";
-import { stagger } from "@/lib/motion";
 import { associatesItemListSchema, breadcrumbSchema, buildMetadata, type Crumb } from "@/lib/seo";
 import { AssociateCard } from "@/components/associates/AssociateCard";
 import { StatStrip } from "@/components/home/HomeSections";
@@ -11,6 +10,7 @@ import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { StackedCards } from "@/components/interactive/StackedCards";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BackgroundArt } from "@/components/ui/BackgroundArt";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -33,7 +33,8 @@ export default function AssociatesIndexPage() {
       <JsonLd data={breadcrumbSchema(crumbs)} />
       <JsonLd data={associatesItemListSchema(associates)} />
 
-      <section aria-labelledby="associates-heading" className="pt-8 pb-14 sm:pt-12 sm:pb-16">
+      <section aria-labelledby="associates-heading" className="relative isolate pt-8 pb-14 sm:pt-12 sm:pb-16">
+        <BackgroundArt variant="hero" />
         <Container>
           <Breadcrumbs items={crumbs} />
           <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
@@ -67,7 +68,7 @@ export default function AssociatesIndexPage() {
                   i === associates.length - 1 && i % 2 === 0 && "sm:col-span-2 lg:col-span-3",
                 )}
               >
-                <Reveal delay={i * stagger} className="h-full">
+                <Reveal className="h-full">
                   <AssociateCard associate={a} headingLevel="h2" />
                 </Reveal>
               </li>

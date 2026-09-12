@@ -62,9 +62,16 @@ Computed with the WCAG relative-luminance formula. Worst-case light glass = whit
 
 ## Typography
 
-- Display: **Manrope** (curki.ai's primary face), 700–800, tight tracking (-0.025em).
-- Body: **Plus Jakarta Sans**, 400–600, 1.6–1.7 line height.
-- Labels: **IBM Plex Mono** 12px uppercase, 0.14em tracking, used for eyebrows and record-style metadata.
+**One family: Inter.** Checked against www.curki.ai by reading the computed styles of its live
+headings, body copy and buttons — they are all Inter. (An earlier note here credited Manrope; that
+was wrong. Manrope appears on only a couple of stray elements of that site.) `--font-display`,
+`--font-sans` and `--font-mono` all resolve to Inter and differ only in weight and tracking.
+
+- Display: Inter 700–800, tight tracking (-0.025em).
+- Body: Inter 400–600, 1.6–1.7 line height.
+- Labels: Inter 12px uppercase, 500 weight, 0.14em tracking, for eyebrows and record-style metadata.
+- Figures that must line up (counters, stat strips) set `font-variant-numeric: tabular-nums`,
+  since Inter's default figures are proportional.
 - Scale: H1 clamp ~2.6rem → 4.25rem; H2 1.9rem → 2.75rem; H3 1.125–1.375rem.
 
 ## Motion

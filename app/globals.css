@@ -4,9 +4,12 @@
    Design tokens. Colours match www.curki.ai. See design/DESIGN.md.
    ------------------------------------------------------------------ */
 @theme {
-  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  /* One family across the site: Inter, matching www.curki.ai. The three tokens survive because
+     they still carry meaning (display / body / label), they are just different weights and
+     tracking of the same face now. */
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --color-brand: #6548ff;
   --color-brand-deep: #5b36e1;
@@ -391,6 +394,132 @@
   }
   100% {
     transform: translate3d(4%, -5%, 0) scale(0.96);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Decorative background art.
+
+   Always a CSS background on an aria-hidden layer, never an <img>: it carries no
+   meaning, so it stays out of the accessibility tree entirely. The layer is taller
+   than its section so the parallax never reveals an edge, and it is capped at 60%
+   opacity over the page colour.
+
+   .bg-art-wash then lays a light gradient on top, heaviest through the middle where
+   the glass panels and copy sit. That is what keeps text on glass above 4.5:1 even
+   where a dark indigo form passes underneath.
+   --------------------------------------------------------------------------- */
+.bg-art {
+  position: absolute;
+  inset: -14% 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* The art itself, drifting slowly and continuously. Transform only, on an element that never
+   carries backdrop-filter, so it composites on the GPU. The blanket reduced-motion rule further
+   down turns the animation off entirely. */
+.bg-art-img {
+  position: absolute;
+  inset: 0;
+  opacity: 0.24;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  animation: bg-drift 32s ease-in-out infinite alternate;
+}
+
+@keyframes bg-drift {
+  from {
+    transform: scale(1.04) translate3d(-1.3%, -0.9%, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(1.3%, 0.9%, 0);
+  }
+}
+
+.bg-art-hero {
+  background-image: url("/images/associates/bg-hero-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-hero-sm.avif") type("image/avif"),
+    url("/images/associates/bg-hero-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-hero {
+    background-image: url("/images/associates/bg-hero.webp");
+    background-image: image-set(
+      url("/images/associates/bg-hero.avif") type("image/avif"),
+      url("/images/associates/bg-hero.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-features {
+  background-image: url("/images/associates/bg-features-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-features-sm.avif") type("image/avif"),
+    url("/images/associates/bg-features-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-features {
+    background-image: url("/images/associates/bg-features.webp");
+    background-image: image-set(
+      url("/images/associates/bg-features.avif") type("image/avif"),
+      url("/images/associates/bg-features.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-cta {
+  background-image: url("/images/associates/bg-cta-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-cta-sm.avif") type("image/avif"),
+    url("/images/associates/bg-cta-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-cta {
+    background-image: url("/images/associates/bg-cta.webp");
+    background-image: image-set(
+      url("/images/associates/bg-cta.avif") type("image/avif"),
+      url("/images/associates/bg-cta.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-wash {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 100% at 50% 45%,
+      rgb(249 250 251 / 0.86) 0%,
+      rgb(249 250 251 / 0.66) 45%,
+      rgb(249 250 251 / 0.4) 72%,
+      rgb(249 250 251 / 0) 100%
+    ),
+    linear-gradient(180deg, rgb(249 250 251 / 0.4) 0%, rgb(249 250 251 / 0) 22%, rgb(249 250 251 / 0) 74%, rgb(249 250 251 / 0.6) 100%);
+}
+
+/* Set by the inline script in app/layout.tsx, and cleared by GsapStage once GSAP has taken over
+   the inline styles. Holds reveal targets hidden across the gap while the GSAP chunk loads, so
+   there is no flash of content that is about to animate in. */
+[data-gsap-armed] [data-gsap-reveal] {
+  opacity: 0;
+}
+
+/* Transparency-sensitive users get the flat page, with no art behind the copy at all. */
+@media (prefers-reduced-transparency: reduce) {
+  .bg-art,
+  .bg-art-wash {
+    display: none;
   }
 }
 

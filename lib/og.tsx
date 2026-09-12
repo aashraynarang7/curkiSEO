@@ -9,9 +9,9 @@ export const ogContentType = "image/png";
 async function loadFonts() {
   const weights = [500, 700, 800] as const;
   const files = await Promise.all(
-    weights.map((w) => readFile(join(process.cwd(), "assets", "fonts", `manrope-${w}.woff`))),
+    weights.map((w) => readFile(join(process.cwd(), "assets", "fonts", `inter-${w}.ttf`))),
   );
-  return weights.map((weight, i) => ({ name: "Manrope", data: files[i], weight, style: "normal" as const }));
+  return weights.map((weight, i) => ({ name: "Inter", data: files[i], weight, style: "normal" as const }));
 }
 
 async function loadLogo() {
@@ -48,7 +48,7 @@ export async function renderOgImage({ eyebrow, title, subtitle, portrait }: OgOp
           display: "flex",
           position: "relative",
           padding: 72,
-          fontFamily: "Manrope",
+          fontFamily: "Inter",
           background: "linear-gradient(135deg, #f6f1fc 0%, #f9fafb 55%, #f0f0ff 100%)",
         }}
       >

@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import type { Associate } from "@/data/associates";
 import { cn } from "@/lib/cn";
+import { ArtImage } from "@/components/ui/ArtImage";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 type AssociateCardProps = {
@@ -17,7 +19,16 @@ type AssociateCardProps = {
 export function AssociateCard({ associate: a, headingLevel = "h3", compact = false, flat = false, className }: AssociateCardProps) {
   const Heading = headingLevel;
   return (
-    <GlassCard as="article" blur={!flat} lift className={cn("group relative flex h-full flex-col p-6 sm:p-7", className)}>
+    <GlassCard as="article" data-gsap-hover blur={!flat} lift className={cn("group relative flex h-full flex-col p-6 sm:p-7", className)}>
+      {!compact && (
+        <div
+          data-art-frame
+          className="-mx-6 -mt-6 mb-6 grid aspect-[16/7] place-items-center overflow-hidden rounded-t-card bg-(--art-bg) sm:-mx-7 sm:-mt-7"
+          style={{ "--art-bg": a.art.bg } as CSSProperties}
+        >
+          <ArtImage name={a.art.name} alt={a.art.alt} width={640} height={640} float className="size-full object-contain" />
+        </div>
+      )}
       <div className="flex items-center gap-4">
         <div className="relative shrink-0">
           <Image

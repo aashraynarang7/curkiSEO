@@ -22,7 +22,7 @@ export function EvidencePanel() {
       </ParallaxLayer>
 
       <ParallaxLayer depth={6}>
-        <figure className="glass rise relative overflow-hidden rounded-[1.75rem] p-4 sm:p-6" style={{ "--delay": "120ms" } as CSSProperties}>
+        <figure className="glass relative overflow-hidden rounded-[1.75rem] p-4 sm:p-6">
           <figcaption className="sr-only">{heroDemo.caption}</figcaption>
 
           <div className="flex items-center justify-between gap-4">

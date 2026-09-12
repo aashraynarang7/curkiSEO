@@ -2,12 +2,14 @@ import type { CSSProperties } from "react";
 import { Check } from "lucide-react";
 import { cta, site } from "@/data/site";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { BackgroundArt } from "@/components/ui/BackgroundArt";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export function CtaBand({ title = cta.title, body = cta.body }: { title?: string; body?: string }) {
   return (
-    <section id="book-a-walkthrough" aria-labelledby="cta-heading" className="relative py-20 sm:py-28">
+    <section id="book-a-walkthrough" aria-labelledby="cta-heading" className="relative isolate py-20 sm:py-28">
+      <BackgroundArt variant="cta" />
       <Container>
         <div className="relative isolate overflow-hidden rounded-[2rem] bg-night px-6 py-14 sm:px-12 sm:py-20">
           <div aria-hidden className="orb orb-drift -top-44 -right-28 size-[38rem]" style={{ "--orb": "rgb(101 72 255 / 0.55)" } as CSSProperties} />
