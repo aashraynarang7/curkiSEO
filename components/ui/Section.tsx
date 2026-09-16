@@ -1,11 +1,9 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Container } from "./Container";
-import { Eyebrow } from "./Eyebrow";
 
 type SectionProps = {
   id: string;
-  eyebrow?: string;
   title?: ReactNode;
   intro?: ReactNode;
   align?: "left" | "center";
@@ -13,19 +11,16 @@ type SectionProps = {
   children?: ReactNode;
 };
 
-export function Section({ id, eyebrow, title, intro, align = "left", className, children }: SectionProps) {
+export function Section({ id, title, intro, align = "left", className, children }: SectionProps) {
   const headingId = `${id}-heading`;
   return (
     <section id={id} aria-labelledby={title ? headingId : undefined} className={cn("relative py-20 sm:py-28", className)}>
       <Container>
-        {(eyebrow || title) && (
+        {title && (
           <header className={cn("mb-12 max-w-2xl sm:mb-16", align === "center" && "mx-auto text-center")}>
-            {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-            {title && (
-              <h2 id={headingId} className="mt-4 text-3xl font-bold leading-[1.1] sm:text-[2.75rem]">
-                {title}
-              </h2>
-            )}
+            <h2 id={headingId} className="text-3xl font-bold leading-[1.1] sm:text-[2.75rem]">
+              {title}
+            </h2>
             {intro && <p className="mt-5 text-lg leading-relaxed text-muted">{intro}</p>}
           </header>
         )}

@@ -50,7 +50,7 @@ export function MagneticButton({ href, children, variant = "primary", size = "md
   };
 
   const classes = cn(buttonClassName({ variant, size }), "relative overflow-hidden", className);
-  const rippleColour = variant === "primary" ? "bg-white/40" : "bg-brand/20";
+  const rippleColour = variant === "primary" || variant === "ghostOnDark" ? "bg-white/40" : "bg-brand/20";
   const content = (
     <>
       {ripples.map((rp) => (

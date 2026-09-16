@@ -24,7 +24,6 @@ import { Marquee } from "@/components/interactive/Marquee";
 import { StepsTimeline } from "@/components/interactive/StepsTimeline";
 import { Tabs, type TabItem } from "@/components/interactive/Tabs";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { BackgroundArt } from "@/components/ui/BackgroundArt";
@@ -40,10 +39,7 @@ export function Hero() {
       <BackgroundArt variant="hero" />
       <Container className="grid items-center gap-16 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
         <div>
-          <div data-gsap-hero>
-            <Eyebrow>{hero.eyebrow}</Eyebrow>
-          </div>
-          <h1 data-gsap-hero id="hero-heading" className="mt-6 text-[2.5rem] leading-[1.04] font-extrabold sm:text-6xl lg:text-[3.75rem]">
+          <h1 data-gsap-hero id="hero-heading" className="text-[2.5rem] leading-[1.04] font-extrabold sm:text-6xl lg:text-[3.75rem]">
             {hero.titleLead} <span className="text-gradient">{hero.titleAccent}</span>
           </h1>
           <p data-gsap-hero className="mt-7 max-w-xl text-lg leading-relaxed text-body sm:text-xl sm:leading-relaxed">{hero.intro}</p>
@@ -119,7 +115,7 @@ export function AssociatesSection() {
   return (
     <div className="relative isolate">
       <BackgroundArt variant="features" />
-      <Section id="associates" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}>
+      <Section id="associates" title={copy.title} intro={copy.intro}>
         <FilterableFlipGrid cards={associates.map(toFlipCard)} filters={filters} label={copy.filterLabel} />
       </Section>
     </div>
@@ -129,7 +125,7 @@ export function AssociatesSection() {
 export function ProblemsSection() {
   const copy = homeCopy.problems;
   return (
-    <Section id="problems" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}>
+    <Section id="problems" title={copy.title} intro={copy.intro}>
       <ul className="grid gap-5 lg:grid-cols-3">
         {problemPillars.map((p, i) => (
           <li key={p.id}>
@@ -171,7 +167,7 @@ const securityIcons: Record<SecurityIcon, LucideIcon> = {
 export function HowItWorksSection() {
   const copy = homeCopy.how;
   return (
-    <Section id="how-it-works" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}>
+    <Section id="how-it-works" title={copy.title} intro={copy.intro}>
       <div className="grid gap-12 lg:grid-cols-2">
         <StepsTimeline steps={connectSteps} />
 
@@ -280,7 +276,7 @@ export function IndustryTabs() {
 export function WhoItsForSection() {
   const copy = homeCopy.who;
   return (
-    <Section id="who-its-for" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}>
+    <Section id="who-its-for" title={copy.title} intro={copy.intro}>
       <PersonaTabs />
 
       <div className="mt-24">
@@ -295,7 +291,7 @@ export function WhoItsForSection() {
 
 export function HomeFaqSection() {
   return (
-    <Section id="faq" eyebrow={homeCopy.faq.eyebrow} title={homeCopy.faq.title}>
+    <Section id="faq" title={homeCopy.faq.title}>
       <div className="max-w-3xl">
         <Accordion items={homeFaqs} />
       </div>

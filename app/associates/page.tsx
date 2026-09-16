@@ -13,7 +13,6 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { BackgroundArt } from "@/components/ui/BackgroundArt";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = buildMetadata({
@@ -39,8 +38,7 @@ export default function AssociatesIndexPage() {
           <Breadcrumbs items={crumbs} />
           <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="max-w-3xl">
-              <Eyebrow>{associatesIndexCopy.eyebrow}</Eyebrow>
-              <h1 id="associates-heading" className="mt-5 text-4xl leading-[1.05] font-extrabold sm:text-6xl">
+              <h1 id="associates-heading" className="text-4xl leading-[1.05] font-extrabold sm:text-6xl">
                 {associatesIndexCopy.title}
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-body sm:text-xl">{associatesIndexCopy.intro}</p>

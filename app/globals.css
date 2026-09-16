@@ -186,6 +186,15 @@
     transition: transform var(--dur-slow) var(--ease-calm);
   }
 
+  /* Heading gradient for the dark hero. Light end of the brand ramp, so large text clears 3:1
+     against the navy with room to spare. */
+  .text-gradient-dark {
+    background: linear-gradient(100deg, #ffffff 0%, #d8ccff 45%, #a88cff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .text-gradient {
     background: linear-gradient(100deg, #5b36e1 0%, #6548ff 55%, #7b61ff 100%);
     -webkit-background-clip: text;
@@ -219,6 +228,166 @@
     display: inline-block;
     animation: word-in var(--dur-reveal) var(--ease-calm) both;
     animation-delay: calc(var(--i, 0) * var(--stagger));
+  }
+
+  /* One of the six outcome pieces. A plain surface rather than `.glass`, because these animate
+     and re-blurring a moving layer every frame is the expensive case. */
+  .outcome-piece {
+    border-radius: var(--radius-card);
+    background: rgb(255 255 255 / 0.74);
+    border: 1px solid rgb(28 22 41 / 0.07);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.8),
+      0 16px 32px -24px rgb(49 16 129 / 0.45);
+  }
+
+  /* ---------- Before / after comparison ----------
+     The contrast is carried by the material, not just the copy: "before" is pressed into the page
+     (inset edge, no shadow, a faint hatch), "after" is glass lifted off it. Text colours are
+     unchanged on both sides — only the surfaces differ, so legibility never pays for the effect. */
+  /* Starts as an ordinary light card; `.before-grey` and `.before-hatch` are the layers that
+     turn it into the drained, crossed-out state. */
+  .before-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: rgb(255 255 255 / 0.74);
+    box-shadow: inset 0 0 0 1px rgb(28 22 41 / 0.08);
+  }
+
+  /* The grey the card drains to, pressed in with an inset edge. */
+  .before-grey {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, #e9e7f0 0%, #e2e0ea 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.7),
+      inset 0 2px 12px rgb(28 22 41 / 0.07);
+  }
+
+  /* Crosshatch: the stuck, crossed-out state. A real element rather than a pseudo so GSAP can fade
+     and drift it, and oversized so the drift never exposes an edge (the panel clips it). */
+  .before-hatch {
+    position: absolute;
+    inset: -25%;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(-45deg, transparent 0 9px, rgb(28 22 41 / 0.045) 9px 10px),
+      repeating-linear-gradient(45deg, transparent 0 9px, rgb(28 22 41 / 0.045) 9px 10px);
+  }
+
+  /* Resting strike-through. Text colour is untouched, so contrast is judged exactly as before. */
+  .before-struck {
+    text-decoration-line: line-through;
+    text-decoration-color: rgb(28 22 41 / 0.55);
+    text-decoration-thickness: 1.5px;
+  }
+
+  /* One drawn strike segment, one per wrapped line, injected and scaled by GsapStage. */
+  .strike-line {
+    position: absolute;
+    height: 1.5px;
+    border-radius: 9999px;
+    background: rgb(28 22 41 / 0.55);
+    transform-origin: 0 50%;
+    pointer-events: none;
+  }
+
+  .after-panel {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 1px 2px rgb(28 22 41 / 0.04),
+      0 34px 60px -28px rgb(49 16 129 / 0.42);
+  }
+
+  .compare-link {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    color: #fff;
+    background: linear-gradient(150deg, #6a44e8 0%, #5b36e1 60%, #4c2ac6 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.28),
+      0 14px 30px -12px rgb(49 16 129 / 0.8);
+  }
+
+  /* ---------- Capability capsules ----------
+     Four purple capsules that flip to reveal the next four. Pages are stacked in one grid cell,
+     so the slot always reserves the tallest page's height and nothing shifts as it cycles.
+     The purple is the logo's own: sampled from curki_logo.png as #5c36e1, which is `brand-deep`. */
+  .capsules {
+    perspective: 1400px;
+  }
+
+  .capsule-slot {
+    display: grid;
+    height: 100%;
+  }
+
+  .capsule-face {
+    grid-area: 1 / 1;
+    border-radius: 1.75rem;
+    padding: 1.5rem 1.5rem 1.75rem;
+    background: linear-gradient(152deg, #6a44e8 0%, #5b36e1 52%, #4c2ac6 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 20px 40px -22px rgb(49 16 129 / 0.75);
+    transform: rotateY(90deg);
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform var(--dur-slow) var(--ease-calm),
+      opacity var(--dur-base) ease;
+  }
+
+  .capsule-face[data-active="true"] {
+    transform: rotateY(0deg);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .capsule-btn {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    color: var(--color-brand-deep);
+    background: rgb(255 255 255 / 0.8);
+    box-shadow: inset 0 0 0 1px rgb(28 22 41 / 0.1);
+    transition: background var(--dur-fast) ease;
+  }
+  .capsule-btn:hover {
+    background: #fff;
+  }
+
+  .capsule-dot {
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: rgb(28 22 41 / 0.18);
+    transition:
+      width var(--dur-base) var(--ease-calm),
+      background var(--dur-fast) ease;
+  }
+  .capsule-dot-on {
+    width: 1.5rem;
+    background: var(--color-brand-deep);
+  }
+
+  /* Reduced motion: the pager still works, it just swaps rather than flipping. */
+  .capsules[data-motion-instant] .capsule-face {
+    transition: none;
+    transform: none;
+    visibility: hidden;
+  }
+  .capsules[data-motion-instant] .capsule-face[data-active="true"] {
+    visibility: visible;
   }
 
   /* ---------- FlipCard ---------- */
@@ -422,11 +591,161 @@
 .bg-art-img {
   position: absolute;
   inset: 0;
-  opacity: 0.24;
+  opacity: var(--bg-art-opacity, 0.24);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   animation: bg-drift 32s ease-in-out infinite alternate;
+}
+
+/* ---------------------------------------------------------------------------
+   Silk backdrop: a navy void lit by purple creases, for the associate hero.
+
+   Every crease is a wide, shallow radial gradient, so the softness is in the gradient
+   itself and no `filter: blur()` is needed on a full-width layer. GSAP drives them by
+   `data-silk-crease`; the values below are the resting state, which is what a
+   reduced-motion visitor keeps — lit and layered, just not moving.
+   --------------------------------------------------------------------------- */
+.silk {
+  position: absolute;
+  inset: 0;
+  /* Without this the layer paints above the section's static content, because positioned
+     elements outrank non-positioned siblings. The section is `isolate`, so -1 stays inside it. */
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(140% 100% at 50% 115%, #221c6b 0%, transparent 58%),
+    radial-gradient(90% 70% at 12% -10%, #16205c 0%, transparent 62%),
+    linear-gradient(176deg, #0a1033 0%, #080c24 55%, #0b1030 100%);
+}
+
+/* The associate's own artwork, multiplied into the navy as a faint watermark. */
+.silk-art {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.silk-crease {
+  position: absolute;
+  left: 50%;
+  border-radius: 9999px;
+  translate: -50% -50%;
+  rotate: var(--crease-rotate, 0deg);
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--crease) / 0.5) 0%,
+    rgb(var(--crease) / 0.22) 38%,
+    rgb(var(--crease) / 0.06) 66%,
+    transparent 82%
+  );
+}
+
+/* Fine grain, so the light reads as fabric rather than a plain gradient. */
+.silk-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
+   Dark hero scope. Flips the copy to its on-dark values and firms up the glass,
+   which would otherwise resolve to a murky grey over navy at 60% white.
+   --------------------------------------------------------------------------- */
+.hero-dark .glass {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(255 255 255 / 0.9));
+  border-color: rgb(255 255 255 / 0.6);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 30px 70px -24px rgb(4 6 24 / 0.75);
+}
+
+.hero-dark .glass-flat {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 22px 50px -22px rgb(4 6 24 / 0.7);
+}
+
+/* ---------------------------------------------------------------------------
+   Recording pulse. A live blue signal radiating from behind the associate portrait:
+   rings expand and fade while a soft glow breathes underneath. Decorative only —
+   `RecordingPulse` marks it aria-hidden, so it never reaches the a11y tree.
+   --------------------------------------------------------------------------- */
+.pulse {
+  --pulse-colour: 37 99 255;
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.pulse-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+
+.pulse-glow {
+  position: absolute;
+  inset: 4%;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, rgb(var(--pulse-colour) / 0.3), rgb(var(--pulse-colour) / 0.08) 58%, transparent 76%);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.pulse-ring {
+  position: absolute;
+  inset: 12%;
+  border-radius: 9999px;
+  border: 2px solid rgb(var(--pulse-colour) / 0.85);
+  box-shadow: 0 0 22px rgb(var(--pulse-colour) / 0.35);
+  opacity: 0;
+  animation: pulse-ring 4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.pulse-ring-2 {
+  animation-delay: 1s;
+}
+.pulse-ring-3 {
+  animation-delay: 2s;
+}
+.pulse-ring-4 {
+  animation-delay: 3s;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
 }
 
 @keyframes bg-drift {
@@ -492,6 +811,98 @@
   }
 }
 
+/* One background per associate, derived from that associate's own role artwork so every page
+   reads differently. Named by slug to match `BackgroundArt`'s convention. */
+.bg-art-oliver-finance {
+  background-image: url("/images/associates/bg-oliver-finance-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-oliver-finance-sm.avif") type("image/avif"),
+    url("/images/associates/bg-oliver-finance-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-oliver-finance {
+    background-image: url("/images/associates/bg-oliver-finance.webp");
+    background-image: image-set(
+      url("/images/associates/bg-oliver-finance.avif") type("image/avif"),
+      url("/images/associates/bg-oliver-finance.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-zoe-documentation {
+  background-image: url("/images/associates/bg-zoe-documentation-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-zoe-documentation-sm.avif") type("image/avif"),
+    url("/images/associates/bg-zoe-documentation-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-zoe-documentation {
+    background-image: url("/images/associates/bg-zoe-documentation.webp");
+    background-image: image-set(
+      url("/images/associates/bg-zoe-documentation.avif") type("image/avif"),
+      url("/images/associates/bg-zoe-documentation.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-alex-hr-onboarding {
+  background-image: url("/images/associates/bg-alex-hr-onboarding-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-alex-hr-onboarding-sm.avif") type("image/avif"),
+    url("/images/associates/bg-alex-hr-onboarding-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-alex-hr-onboarding {
+    background-image: url("/images/associates/bg-alex-hr-onboarding.webp");
+    background-image: image-set(
+      url("/images/associates/bg-alex-hr-onboarding.avif") type("image/avif"),
+      url("/images/associates/bg-alex-hr-onboarding.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-will-rostering {
+  background-image: url("/images/associates/bg-will-rostering-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-will-rostering-sm.avif") type("image/avif"),
+    url("/images/associates/bg-will-rostering-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-will-rostering {
+    background-image: url("/images/associates/bg-will-rostering.webp");
+    background-image: image-set(
+      url("/images/associates/bg-will-rostering.avif") type("image/avif"),
+      url("/images/associates/bg-will-rostering.webp") type("image/webp")
+    );
+  }
+}
+
+.bg-art-james-compliance {
+  background-image: url("/images/associates/bg-james-compliance-sm.webp");
+  background-image: image-set(
+    url("/images/associates/bg-james-compliance-sm.avif") type("image/avif"),
+    url("/images/associates/bg-james-compliance-sm.webp") type("image/webp")
+  );
+}
+
+@media (min-width: 768px) {
+  .bg-art-james-compliance {
+    background-image: url("/images/associates/bg-james-compliance.webp");
+    background-image: image-set(
+      url("/images/associates/bg-james-compliance.avif") type("image/avif"),
+      url("/images/associates/bg-james-compliance.webp") type("image/webp")
+    );
+  }
+}
+
 .bg-art-wash {
   position: absolute;
   inset: 0;
@@ -511,7 +922,10 @@
 /* Set by the inline script in app/layout.tsx, and cleared by GsapStage once GSAP has taken over
    the inline styles. Holds reveal targets hidden across the gap while the GSAP chunk loads, so
    there is no flash of content that is about to animate in. */
-[data-gsap-armed] [data-gsap-reveal] {
+[data-gsap-armed] [data-gsap-reveal],
+[data-gsap-armed] [data-gsap-pop],
+[data-gsap-armed] [data-compare],
+[data-gsap-armed] [data-break-item] {
   opacity: 0;
 }
 

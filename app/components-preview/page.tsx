@@ -23,7 +23,6 @@ import { TiltCard } from "@/components/interactive/TiltCard";
 import { WordReveal, wordCount } from "@/components/interactive/WordReveal";
 import { PreviewShell, ReplayBox } from "@/components/preview/PreviewShell";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -79,8 +78,7 @@ export default function ComponentsPreviewPage() {
 
       <section className="pt-10 pb-8">
         <Container>
-          <Eyebrow>Internal · not indexed</Eyebrow>
-          <h1 className="mt-4 text-4xl font-extrabold sm:text-5xl">Components preview</h1>
+          <h1 className="text-4xl font-extrabold sm:text-5xl">Components preview</h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">
             Every interactive component in the Curki AI design system. Use the switch to simulate reduced motion and check each
             fallback. Test keyboard use with Tab, Enter, Space, arrow keys and Esc.

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "secondary" | "onDark";
+export type ButtonVariant = "primary" | "secondary" | "onDark" | "ghostOnDark";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
@@ -11,6 +11,7 @@ const variants: Record<ButtonVariant, string> = {
     "bg-brand-deep text-white shadow-[0_10px_24px_-12px_rgb(91_54_225/0.8),inset_0_1px_0_rgb(255_255_255/0.2)] hover:bg-[#4d2bcc]",
   secondary: "bg-white/80 text-ink ring-1 ring-ink/10 hover:bg-white hover:ring-ink/20",
   onDark: "bg-white text-ink hover:bg-lavender",
+  ghostOnDark: "bg-white/10 text-white ring-1 ring-white/30 hover:bg-white/20 hover:ring-white/50",
 };
 
 const sizes: Record<ButtonSize, string> = {

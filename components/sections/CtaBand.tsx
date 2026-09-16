@@ -4,7 +4,6 @@ import { cta, site } from "@/data/site";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { BackgroundArt } from "@/components/ui/BackgroundArt";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export function CtaBand({ title = cta.title, body = cta.body }: { title?: string; body?: string }) {
   return (
@@ -16,8 +15,7 @@ export function CtaBand({ title = cta.title, body = cta.body }: { title?: string
           <div aria-hidden className="orb orb-drift-slow -bottom-52 -left-28 size-[30rem]" style={{ "--orb": "rgb(32 186 158 / 0.28)" } as CSSProperties} />
           <div className="relative grid items-center gap-10 lg:grid-cols-[1.35fr_0.65fr]">
             <div>
-              <Eyebrow tone="dark">{cta.eyebrow}</Eyebrow>
-              <h2 id="cta-heading" className="mt-5 text-3xl leading-[1.1] font-bold text-white sm:text-5xl">
+              <h2 id="cta-heading" className="text-3xl leading-[1.1] font-bold text-white sm:text-5xl">
                 {title}
               </h2>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">{body}</p>

@@ -35,6 +35,11 @@ export type Associate = {
    * so a wide frame can extend it seamlessly instead of cropping the square.
    */
   art: { name: string; alt: string; bg: string };
+  /**
+   * Shows the live blue "recording" pulse behind the hero portrait. Only true for the
+   * voice-capture associate — on any other role the recording metaphor would be misleading.
+   */
+  pulse?: boolean;
   /** 2–3 headline outcomes for cards. */
   cardOutcomes: string[];
   problem: { before: string; pains: string[] };
@@ -349,6 +354,8 @@ export const associates: Associate[] = [
       alt: "Illustration of Zoe AI turning a spoken update into a structured care note",
       bg: "#efd9c3",
     },
+    // Zoe is the voice-capture associate, so the recording pulse belongs here and nowhere else.
+    pulse: true,
 
     cardOutcomes: [
       "Replace end-of-shift typing with voice capture",

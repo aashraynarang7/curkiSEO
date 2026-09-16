@@ -9,8 +9,8 @@ import { cn } from "@/lib/cn";
 import { AssociateCard } from "./AssociateCard";
 import { AssociateIcon } from "./AssociateIcon";
 import { Accordion } from "@/components/interactive/Accordion";
+import { CapabilityCapsules } from "@/components/interactive/CapabilityCapsules";
 import { Carousel } from "@/components/interactive/Carousel";
-import { ExpandableCard } from "@/components/interactive/ExpandableCard";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { ParallaxLayer, ParallaxScene } from "@/components/interactive/Parallax";
 import { SpotlightCard } from "@/components/interactive/SpotlightCard";
@@ -18,7 +18,8 @@ import { StepsTimeline } from "@/components/interactive/StepsTimeline";
 import { TiltCard } from "@/components/interactive/TiltCard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { RecordingPulse } from "@/components/ui/RecordingPulse";
+import { SilkBackdrop } from "@/components/ui/SilkBackdrop";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -32,39 +33,38 @@ export function AssociateHero({ a, crumbs }: { a: Associate; crumbs: Crumb[] }) 
   const rest = splitAt > -1 ? a.h1.slice(splitAt + 2) : "";
 
   return (
-    <section aria-labelledby="associate-heading" className="relative pt-8 pb-14 sm:pt-12 sm:pb-20">
+    <section aria-labelledby="associate-heading" className="hero-dark relative isolate overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-24">
+      {/* Navy void lit by drifting purple creases, watermarked with this associate's own artwork. */}
+      <SilkBackdrop variant={a.slug} />
       <Container>
-        <Breadcrumbs items={crumbs} />
+        <Breadcrumbs items={crumbs} tone="dark" />
         <div className="mt-10 grid items-center gap-14 lg:grid-cols-[1.12fr_0.88fr]">
           <div>
-            <Eyebrow>
-              {a.role} · {a.domain}
-            </Eyebrow>
-            <h1 id="associate-heading" className="mt-5 text-5xl leading-[1.02] font-extrabold sm:text-6xl lg:text-7xl">
-              <span className="text-gradient">{lead}</span>
+            <h1 id="associate-heading" className="text-5xl leading-[1.02] font-extrabold sm:text-6xl lg:text-7xl">
+              <span className="text-gradient-dark">{lead}</span>
               {rest && (
                 <>
                   <span className="sr-only">: </span>
-                  <span className="mt-4 block text-[1.625rem] leading-[1.2] font-bold text-ink sm:text-[2rem] lg:text-[2.25rem]">
+                  <span className="mt-4 block text-[1.625rem] leading-[1.2] font-bold text-white sm:text-[2rem] lg:text-[2.25rem]">
                     {rest}
                   </span>
                 </>
               )}
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-body">{a.summary}</p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">{a.summary}</p>
             <ul className="mt-7 grid gap-2.5">
               {a.cardOutcomes.map((o) => (
-                <li key={o} className="flex gap-2.5 font-medium text-ink-soft">
-                  <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal-ink" />
+                <li key={o} className="flex gap-2.5 font-medium text-white">
+                  <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" />
                   {o}
                 </li>
               ))}
             </ul>
             <div className="mt-9 flex flex-wrap gap-3">
-              <MagneticButton href={site.bookingUrl} size="lg" arrow>
+              <MagneticButton href={site.bookingUrl} size="lg" variant="onDark" arrow>
                 {site.bookingLabel}
               </MagneticButton>
-              <MagneticButton href="#capabilities" size="lg" variant="secondary">
+              <MagneticButton href="#capabilities" size="lg" variant="ghostOnDark">
                 What {a.shortName} does
               </MagneticButton>
             </div>
@@ -74,6 +74,12 @@ export function AssociateHero({ a, crumbs }: { a: Associate; crumbs: Crumb[] }) 
             <ParallaxLayer depth={-18} aria-hidden className="absolute -inset-16">
               <div className="orb orb-drift inset-0" style={{ "--orb": "rgb(155 128 255 / 0.42)" } as CSSProperties} />
             </ParallaxLayer>
+            {/* Live recording signal radiating from behind the portrait. Voice capture only. */}
+            {a.pulse && (
+              <ParallaxLayer depth={-10} aria-hidden className="absolute -inset-24">
+                <RecordingPulse />
+              </ParallaxLayer>
+            )}
             <ParallaxLayer depth={8}>
               <figure className="glass relative rounded-[2rem] p-3">
                 <Image
@@ -113,29 +119,59 @@ export function AssociateHero({ a, crumbs }: { a: Associate; crumbs: Crumb[] }) 
 
 export function ProblemSolution({ a }: { a: Associate }) {
   return (
-    <Section id="problem" eyebrow="The problem" title={`What changes with ${a.name}`}>
-      <div className="grid gap-5 lg:grid-cols-2">
-        <Reveal className="h-full">
-          <div className="h-full rounded-card border border-ink/8 bg-white/45 p-7 sm:p-9">
-            <h3 className={cn(labelClass, "text-muted")}>Before</h3>
-            <p className="mt-4 text-lg leading-relaxed text-ink-soft">{a.problem.before}</p>
-            <ul className="mt-6 space-y-3 border-t border-ink/8 pt-6">
-              {a.problem.pains.map((p) => (
-                <li key={p} className="flex gap-3 text-body">
-                  <Minus aria-hidden className="mt-1 size-4 shrink-0 text-muted" />
+    <Section id="problem" title={`What changes with ${a.name}`}>
+      {/* The two states are deliberately built from opposite materials: "before" is flat, recessed
+          and hatched, "after" is lit glass lifted off the page with a tint glow behind it. The
+          arrow between them is the hinge, and GsapStage plays the three in sequence. */}
+      <div data-compare-root className="grid items-center gap-5 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
+        {/* Rendered in its finished state — every pain struck through, the card greyed and
+            crosshatched — so no-JS and reduced-motion readers get the full meaning. GsapStage
+            winds it back to a plain card and plays the strikes, then the grey, then the hatch. */}
+        <div data-compare="before" className="before-panel h-full p-7 sm:p-9">
+          <span aria-hidden data-before="grey" className="before-grey" />
+          <span aria-hidden data-drift="hatch" className="before-hatch" />
+          {/* text-body, not text-muted: on the grey crosshatch the muted grey measured 4.33:1. */}
+          <h3 className={cn(labelClass, "relative text-body")}>Before</h3>
+          <p className="relative mt-4 text-lg leading-relaxed text-ink-soft">{a.problem.before}</p>
+          <ul data-strike-list className="relative mt-6 space-y-3 border-t border-ink/10 pt-6">
+            {a.problem.pains.map((p) => (
+              <li key={p} className="relative flex gap-3 text-body">
+                <Minus aria-hidden className="mt-1 size-4 shrink-0 text-muted" />
+                <span data-strike className="before-struck">
                   {p}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
-        <Reveal className="h-full">
-          <GlassCard className="h-full p-7 sm:p-9">
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div data-compare="link" aria-hidden className="mx-auto my-1 lg:my-0">
+          <span className="compare-link">
+            {/* Tailwind's rotate is a standalone property, so GSAP's transform composes on top of
+                it: nudging x moves the arrow along its own axis, right on desktop and down when
+                the layout stacks. One tween, correct in both orientations. */}
+            <ArrowRight data-drift="arrow" className="size-5 rotate-90 lg:rotate-0" />
+          </span>
+        </div>
+
+        <div data-compare="after" className="relative h-full">
+          {/* Two layers: the outer takes the entrance fade and the scroll-scrubbed scale, the
+              inner takes the hover bloom. Sharing one element would make hover overwrite scrub. */}
+          <span data-compare="glow" aria-hidden className="absolute -inset-8 -z-10">
+            <span
+              data-drift="bloom"
+              className="orb absolute inset-0"
+              style={{ "--orb": "rgb(101 72 255 / 0.34)" } as CSSProperties}
+            />
+          </span>
+          <GlassCard lift className="after-panel h-full p-7 sm:p-9">
             <h3 className={cn(labelClass, "text-teal-ink")}>With {a.name}</h3>
             <p className="mt-4 text-lg leading-relaxed text-ink">{a.solution.after}</p>
-            <p className="mt-8 border-t border-ink/8 pt-6 font-display text-xl leading-snug font-bold text-ink">“{a.quote}”</p>
+            <p className="mt-8 border-l-2 border-brand-deep pl-5 font-display text-xl leading-snug font-bold text-ink">
+              “{a.quote}”
+            </p>
           </GlassCard>
-        </Reveal>
+        </div>
       </div>
     </Section>
   );
@@ -143,10 +179,13 @@ export function ProblemSolution({ a }: { a: Associate }) {
 
 export function Outcomes({ a }: { a: Associate }) {
   return (
-    <Section id="outcomes" eyebrow="Outcomes" title={`What ${a.shortName} delivers`}>
-      <ul className="grid gap-px overflow-hidden rounded-card border border-ink/8 bg-ink/8 sm:grid-cols-2 lg:grid-cols-3">
+    <Section id="outcomes" title={`What ${a.shortName} delivers`}>
+      {/* Six separate pieces. GsapStage lands them as one slab with the gaps closed, then breaks
+          them apart into position. Plain surfaces, not glass: these move, and blurring a moving
+          layer every frame is the expensive case. */}
+      <ul data-break-root className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {a.outcomes.map((o) => (
-          <li key={o.title} className="bg-page/90 p-7">
+          <li key={o.title} data-break-item className="outcome-piece p-7">
             <h3 className="text-xl leading-snug font-bold">{o.title}</h3>
             <p className="mt-2 leading-relaxed text-muted">{o.detail}</p>
           </li>
@@ -193,7 +232,7 @@ export function Outcomes({ a }: { a: Associate }) {
 export function Modules({ a }: { a: Associate }) {
   if (!a.modules?.length) return null;
   return (
-    <Section id="modules" eyebrow="Modules" title={`${numberWords[a.modules.length] ?? a.modules.length} modules, one Associate`}>
+    <Section id="modules" title={`${numberWords[a.modules.length] ?? a.modules.length} modules, one Associate`}>
       <ul className={cn("grid gap-5", a.modules.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
         {a.modules.map((mod, i) => (
           <li key={mod.title}>
@@ -215,29 +254,15 @@ export function Modules({ a }: { a: Associate }) {
 
 export function Capabilities({ a }: { a: Associate }) {
   return (
-    <Section id="capabilities" eyebrow="Capabilities" title="Key capabilities" intro={`What ${a.shortName} can do for your team. Select a capability for detail.`}>
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {a.capabilities.map((c, i) => (
-          <li key={c.title}>
-            <Reveal className="h-full">
-              <ExpandableCard
-                eyebrow={String(i + 1).padStart(2, "0")}
-                title={c.title}
-                summary={c.detail}
-                context={`${a.name} · ${a.role}`}
-                cta={{ href: site.bookingUrl, label: `See ${a.shortName} in a walkthrough` }}
-              />
-            </Reveal>
-          </li>
-        ))}
-      </ul>
+    <Section id="capabilities" title="Key capabilities" intro={`What ${a.shortName} can do for your team.`}>
+      <CapabilityCapsules items={a.capabilities} label={`${a.shortName}'s capabilities`} />
     </Section>
   );
 }
 
 export function UseCases({ a }: { a: Associate }) {
   return (
-    <Section id="use-cases" eyebrow="In practice" title={`${a.shortName} at work`}>
+    <Section id="use-cases" title={`${a.shortName} at work`}>
       <ul className="grid gap-5 md:grid-cols-3">
         {a.useCases.map((u, i) => (
           <li key={u.title}>
@@ -257,7 +282,7 @@ export function UseCases({ a }: { a: Associate }) {
 
 export function Trust({ a }: { a: Associate }) {
   return (
-    <Section id="trust" eyebrow="Built for trust" title="Asks before it assumes. Knows its limits.">
+    <Section id="trust" title="Asks before it assumes. Knows its limits.">
       <div className="grid gap-5 lg:grid-cols-2">
         <Reveal className="h-full">
           <GlassCard className="h-full p-7 sm:p-9">
@@ -297,7 +322,6 @@ export function Connect({ a }: { a: Associate }) {
   return (
     <Section
       id="connect"
-      eyebrow="How it connects"
       title={`Connect ${a.shortName} to your systems`}
       intro="API-first and read-only by default. Most teams connect a system in about 3 minutes once credentials are ready, with no system changes and no IT project."
     >
@@ -358,7 +382,7 @@ export function Connect({ a }: { a: Associate }) {
 export function Fit({ a }: { a: Associate }) {
   const industryNames = industries.filter((i) => a.industries.includes(i.id)).map((i) => i.name);
   return (
-    <Section id="who-its-for" eyebrow="Who it's for" title={`Who ${a.name} is for`}>
+    <Section id="who-its-for" title={`Who ${a.name} is for`}>
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="rounded-card border border-ink/8 bg-white/45 p-7">
           <h3 className={cn(labelClass, "text-muted")}>Roles</h3>
@@ -395,7 +419,7 @@ export function Fit({ a }: { a: Associate }) {
 
 export function AssociateFaq({ a }: { a: Associate }) {
   return (
-    <Section id="faq" eyebrow="FAQ" title={`${a.name}: frequently asked questions`}>
+    <Section id="faq" title={`${a.name}: frequently asked questions`}>
       <div className="max-w-3xl">
         <Accordion items={a.faqs} />
       </div>
@@ -408,7 +432,7 @@ export function Related({ a }: { a: Associate }) {
   const ordered = [...related, ...associates.filter((o) => o.slug !== a.slug && !a.related.includes(o.slug))];
   if (!ordered.length) return null;
   return (
-    <Section id="related" eyebrow="Related AI Associates" title="Explore related AI Associates">
+    <Section id="related" title="Explore related AI Associates">
       <Carousel
         label="AI Associates"
         slides={ordered.map((r) => ({ id: r.slug, label: r.name, content: <AssociateCard associate={r} flat /> }))}

@@ -8,26 +8,47 @@ import { preload } from "react-dom";
  * Its own wrapper does the clipping, so the parallax can overflow the art without also
  * clipping the section's drifting orbs.
  *
+ * Every variant name maps by convention to a `.bg-art-<variant>` rule in globals.css and to
+ * `/images/associates/bg-<variant>.*` on disk, so adding an associate needs no wiring here.
+ *
  * The parent must be positioned (`relative`).
  */
-const variants = {
-  hero: "bg-art-hero",
-  features: "bg-art-features",
-  cta: "bg-art-cta",
-} as const;
+const variants = [
+  "hero",
+  "features",
+  "cta",
+  "oliver-finance",
+  "zoe-documentation",
+  "alex-hr-onboarding",
+  "will-rostering",
+  "james-compliance",
+] as const;
 
-export function BackgroundArt({ variant }: { variant: keyof typeof variants }) {
-  // Only the hero art is above the fold, so only it is worth preloading. Everything else is a CSS
-  // background the browser fetches when the section is about to paint. The two links mirror the
-  // media query in `.bg-art-hero`, so a phone never preloads the desktop-sized file.
-  if (variant === "hero") {
-    preload("/images/associates/bg-hero-sm.avif", {
+export type BackgroundArtVariant = (typeof variants)[number];
+
+/** Sections that render above the fold, so their art is worth preloading. */
+const belowFold = new Set<BackgroundArtVariant>(["features", "cta"]);
+
+/**
+ * True when a name (an associate slug, say) has background art of its own. Lets a caller fall
+ * back to the generic hero art instead of emitting a class that has no rule behind it.
+ */
+export function isBackgroundArtVariant(name: string): name is BackgroundArtVariant {
+  return (variants as readonly string[]).includes(name);
+}
+
+export function BackgroundArt({ variant }: { variant: BackgroundArtVariant }) {
+  // Below-the-fold art is just a CSS background the browser fetches when the section is about to
+  // paint. Above the fold it is preloaded, with two links mirroring the media query in the CSS so
+  // a phone never preloads the desktop-sized file.
+  if (!belowFold.has(variant)) {
+    preload(`/images/associates/bg-${variant}-sm.avif`, {
       as: "image",
       type: "image/avif",
       media: "(max-width: 767px)",
       fetchPriority: "high",
     });
-    preload("/images/associates/bg-hero.avif", {
+    preload(`/images/associates/bg-${variant}.avif`, {
       as: "image",
       type: "image/avif",
       media: "(min-width: 768px)",
@@ -40,7 +61,7 @@ export function BackgroundArt({ variant }: { variant: keyof typeof variants }) {
           inner one carries the always-on CSS drift. Splitting them keeps the two animations off
           the same properties, so neither overwrites the other. */}
       <span data-bg-art={variant} className="bg-art">
-        <span className={`bg-art-img ${variants[variant]}`} />
+        <span className={`bg-art-img bg-art-${variant}`} />
       </span>
       <span className="bg-art-wash" />
     </div>

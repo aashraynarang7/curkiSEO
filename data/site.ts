@@ -246,7 +246,6 @@ export const homeCopy = {
       "AI Associates that find margin leaks, fill shifts, draft notes, onboard staff and audit incidents, on top of your existing systems. Built in Sydney.",
   },
   hero: {
-    eyebrow: "AI Associates · Built in Sydney",
     titleLead: "AI Associates that turn operational chaos into",
     titleAccent: "clarity in minutes",
     intro:
@@ -255,7 +254,6 @@ export const homeCopy = {
     assurances: ["Hosted on Microsoft Azure Australia", "Read-only by default", "People approve every step"],
   },
   associates: {
-    eyebrow: "Your AI Associates",
     title: "Five specialists that work on top of your existing systems",
     intro:
       "Each AI Associate is purpose-built for one part of your operation: finance and payroll, documentation, hiring and onboarding, rostering, and incident compliance.",
@@ -263,7 +261,6 @@ export const homeCopy = {
     filterAll: "All",
   },
   problems: {
-    eyebrow: "The problems we solve",
     title: "The leaks, gaps and lost hours a spreadsheet can't show you",
     intro:
       "Most providers know something is wrong. They just can't see where it is, how big it has become or how to fix it.",
@@ -273,7 +270,6 @@ export const homeCopy = {
     hint: "Hover, focus or tap + for details",
   },
   how: {
-    eyebrow: "How it works",
     title: "No system changes. No IT overhaul.",
     intro:
       "AI Associates connect via API to the systems that already hold your truth. Most teams connect a system in about 3 minutes once credentials are ready.",
@@ -285,7 +281,6 @@ export const homeCopy = {
     securityTitle: "Security built for sensitive participant and staff data",
   },
   who: {
-    eyebrow: "Who it's for",
     title: "Built for the people accountable for margin, compliance and care",
     intro:
       "For Australian workforce-driven, compliance-focused organisations, typically with 20 or more participants or staff.",
@@ -297,7 +292,6 @@ export const homeCopy = {
       "Every AI Associate is built for Aged Care & NDIS providers. Hiring and onboarding with Alex AI extends across all five industries.",
   },
   faq: {
-    eyebrow: "FAQ",
     title: "Frequently asked questions",
   },
   marquee: {
@@ -312,14 +306,12 @@ export const associatesIndexCopy = {
     description:
       "Meet Oliver, Zoe, Alex, Will and James: AI Associates for finance, documentation, hiring, rostering and incident compliance in Australia.",
   },
-  eyebrow: "AI Associates",
   title: "AI Associates for finance, documentation, HR, rostering and compliance",
   intro:
     "Five purpose-built specialists that sit on top of your existing systems. Start with the one that solves your most pressing problem, then add more.",
 };
 
 export const cta = {
-  eyebrow: "Book a walkthrough",
   title: "See your AI Associates working with your systems",
   body: "In a 30-minute session, our product experts will look at your stack, confirm which connectors are live and walk you through the workflow end to end. Onboarding support is complimentary.",
   points: ["No system changes", "Read-only by default", "Data hosted in Australia", "People approve every step"],
