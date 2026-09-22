@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { ArrowRight, Ban, Check, Minus, MessageCircleQuestion } from "lucide-react";
+import { ArrowRight, Ban, Check, Minus, MessageCircleQuestion, Play } from "lucide-react";
 import { associates, getRelated, type Associate } from "@/data/associates";
-import { connectSteps, industries, site } from "@/data/site";
+import { industries, site } from "@/data/site";
 import type { Crumb } from "@/lib/seo";
 import { cn } from "@/lib/cn";
 import { AssociateCard } from "./AssociateCard";
@@ -23,6 +23,7 @@ import { SilkBackdrop } from "@/components/ui/SilkBackdrop";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
+import { CloudinaryVideo } from "@/components/ui/CloudinaryVideo";
 
 const labelClass = "font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em]";
 const numberWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six"];
@@ -261,6 +262,7 @@ export function Capabilities({ a }: { a: Associate }) {
 }
 
 export function UseCases({ a }: { a: Associate }) {
+  const video = a.useCasesVideo;
   return (
     <Section id="use-cases" title={`${a.shortName} at work`}>
       <ul className="grid gap-5 md:grid-cols-3">
@@ -276,6 +278,24 @@ export function UseCases({ a }: { a: Associate }) {
           </li>
         ))}
       </ul>
+      {video && (
+        <Reveal className="mt-12">
+          {/* Narrower than the scenario grid above it: a 16:9 clip run to the full 72rem container
+              would tower over the cards it illustrates. Plain panel, not glass — the scenario
+              cards are already glass, and stacking blurred surfaces is off-limits. */}
+          <figure className="mx-auto max-w-3xl rounded-card border border-ink/8 bg-white/45 p-3 sm:p-4">
+            <CloudinaryVideo
+              publicId={video.publicId}
+              version={video.version}
+              width={video.width}
+              height={video.height}
+              label={video.label}
+              className="block rounded-2xl bg-night"
+            />
+            <figcaption className="px-2 pt-4 pb-1 text-center leading-relaxed text-muted">{video.caption}</figcaption>
+          </figure>
+        </Reveal>
+      )}
     </Section>
   );
 }
@@ -319,6 +339,69 @@ export function Trust({ a }: { a: Associate }) {
 }
 
 export function Connect({ a }: { a: Associate }) {
+  const { video } = a.connect;
+  // The four-step card is the constant here. Where an associate has a walkthrough, it takes the
+  // place of the systems/configure/protection column and the steps move across to sit beside it.
+  const steps = (
+    <Reveal>
+      <GlassCard className="p-7 sm:p-9">
+        <h3 className="text-2xl font-bold">Up and running in four steps</h3>
+        <StepsTimeline steps={a.setupSteps} headingLevel="h4" variant="tinted" className="mt-7" />
+        <p className="mt-8 rounded-xl bg-lavender/80 px-4 py-3.5 text-[0.9375rem] leading-relaxed text-ink-soft">
+          Stuck on scopes or ID mapping? Book a free 30-minute session and our product experts will onboard you end to end.{" "}
+          <Link href={site.bookingUrl} className="font-semibold text-brand-deep underline-offset-4 hover:underline">
+            {site.bookingLabel}
+          </Link>
+        </p>
+      </GlassCard>
+    </Reveal>
+  );
+
+  if (video) {
+    return (
+      <Section
+        id="connect"
+        title={`See ${a.shortName} AI in action`}
+        intro="Watch the walkthrough, then get set up in four steps. Connections are API-first and read-only by default, and most teams connect a system in about 3 minutes once credentials are ready."
+      >
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          {steps}
+          <Reveal>
+            {/* Plain panel, not glass: the section already carries a glass card opposite, and
+                stacking a second blurred surface here would break the "no glass in glass" rule
+                the moment the video card sat on one. */}
+            <figure className="rounded-card border border-ink/8 bg-white/45 p-3 sm:p-4">
+              {"placeholder" in video ? (
+                // Same box as the player, so the real video drops in without a layout shift.
+                <div
+                  className="grid place-items-center rounded-2xl bg-night px-6 text-center"
+                  style={{ aspectRatio: `${video.width} / ${video.height}` }}
+                >
+                  <div>
+                    <span className="mx-auto grid size-14 place-items-center rounded-full border border-white/20 bg-white/10 text-white/80">
+                      <Play aria-hidden className="ml-0.5 size-6" />
+                    </span>
+                    <p className="mt-4 font-semibold text-white/80">{video.label}</p>
+                  </div>
+                </div>
+              ) : (
+                <CloudinaryVideo
+                  publicId={video.publicId}
+                  version={video.version}
+                  width={video.width}
+                  height={video.height}
+                  label={video.label}
+                  className="block rounded-2xl bg-night"
+                />
+              )}
+              <figcaption className="px-2 pt-4 pb-1 leading-relaxed text-muted">{video.caption}</figcaption>
+            </figure>
+          </Reveal>
+        </div>
+      </Section>
+    );
+  }
+
   return (
     <Section
       id="connect"
@@ -362,18 +445,7 @@ export function Connect({ a }: { a: Associate }) {
           </div>
         </div>
 
-        <Reveal>
-          <GlassCard className="p-7 sm:p-9">
-            <h3 className="text-2xl font-bold">Up and running in four steps</h3>
-            <StepsTimeline steps={connectSteps} headingLevel="h4" variant="tinted" className="mt-7" />
-            <p className="mt-8 rounded-xl bg-lavender/80 px-4 py-3.5 text-[0.9375rem] leading-relaxed text-ink-soft">
-              Stuck on scopes or ID mapping? Book a free 30-minute session and our product experts will onboard you end to end.{" "}
-              <Link href={site.bookingUrl} className="font-semibold text-brand-deep underline-offset-4 hover:underline">
-                {site.bookingLabel}
-              </Link>
-            </p>
-          </GlassCard>
-        </Reveal>
+        {steps}
       </div>
     </Section>
   );

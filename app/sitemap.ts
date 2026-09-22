@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { associates } from "@/data/associates";
+import { site } from "@/data/site";
 import { absoluteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+  const lastModified = new Date(site.contentUpdated);
   return [
     { url: absoluteUrl("/"), lastModified, changeFrequency: "monthly", priority: 1 },
     { url: absoluteUrl("/associates"), lastModified, changeFrequency: "monthly", priority: 0.9 },

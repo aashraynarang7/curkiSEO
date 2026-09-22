@@ -15,6 +15,34 @@ export type Item = { title: string; detail: string };
 
 export type AssociateIconName = "chart-pie" | "mic" | "user-plus" | "calendar-clock" | "shield-check";
 
+/** A hosted walkthrough, shown under an associate's scenarios or in place of their systems column. */
+export type AssociateVideo = {
+  /** Cloudinary public ID. Folders are part of the ID. */
+  publicId: string;
+  /** Cloudinary asset version, so the delivery URL is immutable and cached indefinitely. */
+  version: number;
+  /** Intrinsic pixel dimensions of the source, used to reserve the box before the poster decodes. */
+  width: number;
+  height: number;
+  /** Accessible name for the player, and the text shown if the video cannot be rendered. */
+  label: string;
+  /** Visible caption under the player. */
+  caption: string;
+};
+
+/**
+ * Holds the walkthrough slot until the recording exists: the section takes its video layout and
+ * the box is reserved at the final size, so swapping in a real `AssociateVideo` causes no shift.
+ */
+export type AssociateVideoPlaceholder = {
+  placeholder: true;
+  width: number;
+  height: number;
+  /** Shown inside the empty frame. */
+  label: string;
+  caption: string;
+};
+
 export type Associate = {
   slug: string;
   name: string;
@@ -48,12 +76,16 @@ export type Associate = {
   modules?: Item[];
   capabilities: Item[];
   useCases: Item[];
+  /** Optional walkthrough rendered beneath the scenario cards. */
+  useCasesVideo?: AssociateVideo;
   /** Illustrative model from Curki's value metrics. */
   valueModel?: { heading: string; rows: { before: string; after: string }[]; footnote: string };
   askPrompts?: string[];
   uncertainty: Item[];
   boundaries: Item[];
-  connect: { systems: string[]; configure: string[] };
+  connect: { systems: string[]; configure: string[]; video?: AssociateVideo | AssociateVideoPlaceholder };
+  /** Four setup steps for this associate, from its "How do I connect" block in the source file. */
+  setupSteps: Item[];
   fit: { idealFor: string; notIdealFor?: string };
   personas: string[];
   industries: IndustryId[];
@@ -263,8 +295,34 @@ export const associates: Associate[] = [
     ],
     connect: {
       systems: ["Care management / rostering", "Finance", "Payroll", "HR"],
+      video: {
+        publicId: "Oliver_CFO_3m43_with_voiceover",
+        version: 1789994824,
+        width: 1920,
+        height: 1080,
+        // TODO: confirm this description against the finished cut, and add a WebVTT captions file
+        // in `public/` for the spoken content (`captionsSrc` on CloudinaryVideo).
+        label: "Walkthrough of the Oliver AI finance modules",
+        caption:
+          "A walk through Financial Health, Payroll Analysis and Client Profitability in the product. Recorded with sample data.",
+      },
       configure: ["Pay category and penalty mapping", "Client and staff ID mapping across systems", "Pay periods"],
     },
+    setupSteps: [
+      { title: "Create your account", detail: "Sign up at Curki.ai and verify your email." },
+      {
+        title: "Connect your finance stack",
+        detail: "In Connect, paste an API key or complete OAuth for care management or rostering, finance, payroll and HR. More connections mean deeper reconciliation.",
+      },
+      {
+        title: "Confirm access and mapping",
+        detail: "Choose read-only scopes, then map pay categories, penalties and client and staff IDs wherever automatic matching can't resolve them.",
+      },
+      {
+        title: "Run your first reconciliation",
+        detail: "Open Financial Health, Client Profitability or Payroll Analysis, choose a pay period and review the flagged leaks, mismatches and margin drivers.",
+      },
+    ],
     fit: {
       idealFor:
         "CEOs, CFOs, finance, payroll and operations leaders at organisations with 20+ participants or staff, dealing with margin pressure, disconnected systems and heavy manual reporting.",
@@ -486,8 +544,33 @@ export const associates: Associate[] = [
     ],
     connect: {
       systems: ["Care management / case notes", "Rostering (optional, to pre-select participants)"],
+      video: {
+        publicId: "Zoe_Voice_to_Document_64s_with_voiceover_1",
+        version: 1789991267,
+        width: 1920,
+        height: 1080,
+        // TODO: confirm this description against the finished cut, and add a WebVTT captions file
+        // in `public/` for the spoken content (`captionsSrc` on CloudinaryVideo).
+        label: "Walkthrough of Zoe AI turning voice into documents",
+        caption: "A walk through Zoe's voice-to-document module, recorded in the product with sample data.",
+      },
       configure: ["Note templates", "Mandatory prompts", "Roles and approval permissions", "Participant privacy settings"],
     },
+    setupSteps: [
+      { title: "Create your account", detail: "Sign up at Curki.ai and verify your email." },
+      {
+        title: "Connect your care notes system",
+        detail: "Paste an API key or complete OAuth for your care management or case notes system, plus rostering if you want participants and visits pre-selected.",
+      },
+      {
+        title: "Set templates and approvals",
+        detail: "Enable write-back only where it's supported and approved, then set note templates, mandatory prompts, who can create and approve, and participant privacy.",
+      },
+      {
+        title: "Staff speak, review and save",
+        detail: "Staff open Zoe, pick a template, tap Record and speak the update. They review the draft, edit if needed, then save or download the note.",
+      },
+    ],
     fit: {
       idealFor:
         "Support workers, nurses, support coordinators and care managers in aged care and NDIS environments with high visit volumes and heavy documentation load.",
@@ -643,19 +726,19 @@ export const associates: Associate[] = [
     ],
     useCases: [
       {
-        title: "A standard hire",
+        title: "From inbox to shortlist",
         detail:
-          "For an NDIS support worker: resumes in, Alex shortlists, sends the screening test, assigns induction training, requests NDIS Worker Screening, a police check and WWCC, verifies them and onboards.",
+          "For a disability support role: resumes arrive, and Alex reads each one against your role criteria, including experience, availability and required checks. The strongest matches are ranked and returned as a shortlist ready for your approval.",
       },
       {
-        title: "Surge hiring",
+        title: "Tests built for the role",
         detail:
-          "For aged care or hospitality: Alex screens and ranks a whole batch, you approve the shortlist in one step, and tests, training and document requests go to every candidate automatically.",
+          "For an aged care or customer-facing role: Alex creates a screening test from the job description, sends it to every shortlisted candidate and scores each response against the same standard. You compare candidates on how they'd perform in the role.",
       },
       {
-        title: "Licensed and ticketed roles",
+        title: "Job-ready from day one",
         detail:
-          "For transport or field services: Alex requires the relevant licence or ticket, such as a driver's licence or white card, and won't mark a worker ready until it's collected.",
+          "For a new hospitality or field services team: Alex assigns the right induction modules to each new starter, tracks their progress, follows up on anything unfinished and confirms completion before their first shift.",
       },
     ],
     valueModel: {
@@ -680,6 +763,16 @@ export const associates: Associate[] = [
     ],
     connect: {
       systems: ["HR / ATS / HRIS", "Background check provider (optional)", "Learning management system (optional)"],
+      video: {
+        publicId: "HR_module_Alex",
+        version: 1789551542,
+        width: 1920,
+        height: 1080,
+        // TODO: confirm this description against the finished cut, and add a WebVTT captions file
+        // in `public/` for the spoken content (`captionsSrc` on CloudinaryVideo).
+        label: "Walkthrough of the Alex HR module",
+        caption: "A walk through the HR module: how Alex sits on top of your existing HR, ATS or HRIS system.",
+      },
       configure: [
         "Roles and screening criteria",
         "Required tests per role",
@@ -688,6 +781,21 @@ export const associates: Associate[] = [
         "Who can shortlist, approve hires and sign off onboarding",
       ],
     },
+    setupSteps: [
+      { title: "Create your account", detail: "Sign up at Curki.ai and verify your email." },
+      {
+        title: "Connect your HR systems",
+        detail: "Paste an API key or complete OAuth for your HR, ATS or HRIS, plus a background-check provider and LMS if you use them. Read-only where possible.",
+      },
+      {
+        title: "Set up each role",
+        detail: "Configure screening criteria, required tests, mandatory training and the documents and clearances each role and site needs.",
+      },
+      {
+        title: "Hand Alex the role",
+        detail: "Share the job description and resumes. Alex screens, tests, assigns training and collects checks, then reports back for your approval.",
+      },
+    ],
     fit: {
       idealFor:
         "HR and operations teams across aged care and NDIS, healthcare, field services, transport and hospitality who hire regularly or in surges.",
@@ -888,8 +996,32 @@ export const associates: Associate[] = [
     ],
     connect: {
       systems: ["Rostering / care management", "Payroll (optional, for cost risk)", "HR (optional)"],
+      // TODO: replace with the Will walkthrough once it's uploaded to Cloudinary: swap this for an
+      // AssociateVideo with its publicId and version (see Zoe, Oliver or James).
+      video: {
+        placeholder: true,
+        width: 1920,
+        height: 1080,
+        label: "Will AI walkthrough coming soon",
+        caption: "A walk through Will's smart rostering module, recorded in the product with sample data.",
+      },
       configure: ["Ranking priorities", "SMS templates", "Cut-off timers and escalation rules", "Participant privacy for messages"],
     },
+    setupSteps: [
+      { title: "Create your account", detail: "Sign up at Curki.ai and verify your email." },
+      {
+        title: "Connect your rostering system",
+        detail: "Paste an API key or complete OAuth for rostering or care management, plus payroll for cost risk and HR if you want them. Read-only is recommended.",
+      },
+      {
+        title: "Set your ranking rules",
+        detail: "Choose how Will weighs cost, distance, continuity and skills, then set SMS templates, cut-off timers and escalation rules.",
+      },
+      {
+        title: "Fill your first gap",
+        detail: "Open Smart Rostering on an open shift. Will ranks qualified staff, texts them and holds the confirmation for your approval.",
+      },
+    ],
     fit: {
       idealFor:
         "Rostering coordinators, schedulers and operations managers in aged care, NDIS and home care managing 50+ staff with frequent cancellations and changes.",
@@ -1114,6 +1246,16 @@ export const associates: Associate[] = [
     ],
     connect: {
       systems: ["Care management / progress notes", "Incident / risk register", "Complaints system (optional)"],
+      video: {
+        publicId: "James_Compliance_52s_with_voiceover",
+        version: 1789991173,
+        width: 1920,
+        height: 1080,
+        // TODO: confirm this description against the finished cut, and add a WebVTT captions file
+        // in `public/` for the spoken content (`captionsSrc` on CloudinaryVideo).
+        label: "Walkthrough of the James AI compliance module",
+        caption: "A walk through James's incident and compliance module, recorded in the product with sample data.",
+      },
       configure: [
         "Incident categories and severity levels",
         "Reportable definitions and prompts",
@@ -1121,6 +1263,21 @@ export const associates: Associate[] = [
         "Alerting rules and who is notified",
       ],
     },
+    setupSteps: [
+      { title: "Create your account", detail: "Sign up at Curki.ai and verify your email." },
+      {
+        title: "Connect notes and incidents",
+        detail: "Paste an API key or complete OAuth for your progress notes system and incident or risk register, plus complaints if you want them. Read-only is recommended.",
+      },
+      {
+        title: "Define what counts",
+        detail: "Set incident categories and severity levels, reportable definitions, corrective action fields and who is alerted when.",
+      },
+      {
+        title: "Audit continuously",
+        detail: "Open Incident Management & Auditing. New notes and incidents are reviewed on each refresh, with Needs Review alerts and unreported incident candidates.",
+      },
+    ],
     fit: {
       idealFor:
         "Quality and compliance managers, operations managers, team leaders and CEOs of NDIS and aged care providers (typically 20+ participants) who need audit-ready governance and time-bound incident control.",

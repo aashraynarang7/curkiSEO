@@ -3,8 +3,12 @@
 
 export const site = {
   name: "Curki AI",
-  // TODO: confirm canonical production domain before launch.
-  url: "https://curki.ai",
+  // Canonical host. The apex (curki.ai) 301-redirects here, so every canonical, sitemap URL,
+  // OG URL and JSON-LD @id must use www, or search engines see them all as redirects.
+  url: "https://www.curki.ai",
+  // Date the page copy last changed meaningfully. Feeds sitemap <lastmod>; bump it when you edit
+  // copy (a build timestamp would claim every page changed on every deploy).
+  contentUpdated: "2026-09-18",
   locale: "en_AU",
   language: "en-AU",
   location: "Sydney, Australia",
@@ -15,9 +19,15 @@ export const site = {
   // Every page has a #book-a-walkthrough section, so this anchor works site-wide until then.
   bookingUrl: "#book-a-walkthrough",
   bookingLabel: "Book a walkthrough",
-  // TODO: add organisation contact email, ABN, street address and social profile URLs for JSON-LD.
+  // TODO: add organisation contact email, ABN and street address for JSON-LD.
   contactEmail: "",
-  sameAs: [] as string[],
+  // Official profiles, as linked from www.curki.ai.
+  sameAs: [
+    "https://www.linkedin.com/company/curkiai/",
+    "https://www.facebook.com/curkiai",
+    "https://www.instagram.com/curkiai/",
+    "https://www.youtube.com/@CurkiAI",
+  ] as string[],
 } as const;
 
 export type Stat = { value: string; label: string };
